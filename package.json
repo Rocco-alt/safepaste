@@ -11,12 +11,3 @@
     "node": ">=18.0.0"
   }
 }
-```
-
-4. Save and close.
-
-**Then in your terminal, run:**
-```
-git add package.json
-git commit -m "Add root package.json for Railway deployment"
-git push
