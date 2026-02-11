@@ -31,7 +31,7 @@
         "https://console.groq.com/*",
         "https://grok.com/*"
       ],
-      "js": ["patterns.js", "detector.js", "content.js"],
+      "js": ["patterns.js", "detect-core.js", "detector.js", "content.js"],
       "css": ["ui.css"],
       "run_at": "document_idle"
     }
