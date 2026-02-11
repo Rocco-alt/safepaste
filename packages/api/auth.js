@@ -1,13 +1,14 @@
 // auth.js — API key authentication + per-key rate limiting
 //
-// In production, swap this for a database lookup (Postgres, Redis, etc.)
-// For now, keys are stored in-memory for easy local development.
+// Keys are loaded from PostgreSQL on startup (if DATABASE_URL is set).
+// Otherwise, falls back to env-var-based demo keys for local development.
+// Rate limiting always runs in-memory (fast, ephemeral by design).
 
 const crypto = require("crypto");
 
 // ---------------------------------------------------------------------------
-// In-memory key store
-// Replace with a real database in production.
+// In-memory key store (cache for fast auth + rate limiting)
+// Populated from PostgreSQL on startup, or from env vars as fallback.
 // ---------------------------------------------------------------------------
 const API_KEYS = new Map();
 
@@ -105,4 +106,31 @@ function authenticateKey(req, res, next) {
   next();
 }
 
-module.exports = { authenticateKey, registerKey, generateKey, API_KEYS };
+// ---------------------------------------------------------------------------
+// Database-backed key loading (called from server.js on startup)
+// ---------------------------------------------------------------------------
+async function initAuth() {
+  const { loadAllKeys } = require("./key-manager");
+  const rows = await loadAllKeys();
+
+  if (!rows) {
+    // DB not available — the sync fallback keys above are already in the Map
+    console.log("[Auth] Using in-memory fallback keys");
+    return;
+  }
+
+  // Clear the sync fallback keys and load everything from the database
+  API_KEYS.clear();
+  for (const row of rows) {
+    API_KEYS.set(row.key_string, {
+      id: row.id,
+      plan: row.plan,
+      rateLimit: row.rate_limit,
+      requestCount: 0,
+      windowStart: Date.now()
+    });
+  }
+  console.log(`[Auth] Loaded ${rows.length} key(s) from database`);
+}
+
+module.exports = { authenticateKey, registerKey, generateKey, API_KEYS, initAuth };

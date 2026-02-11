@@ -5,7 +5,8 @@
     "postinstall": "npm install --prefix packages/api",
     "start": "node packages/api/server.js",
     "test": "node packages/api/test.js",
-    "build:extension": "node scripts/build-extension.js"
+    "build:extension": "node scripts/build-extension.js",
+    "migrate": "node packages/api/db.js"
   },
   "engines": {
     "node": ">=18.0.0"

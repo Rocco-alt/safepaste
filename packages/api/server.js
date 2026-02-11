@@ -4,7 +4,9 @@ const helmet = require("helmet");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const { analyze } = require("./detector");
-const { authenticateKey, API_KEYS } = require("./auth");
+const { authenticateKey, generateKey, API_KEYS, initAuth } = require("./auth");
+const { initDb } = require("./db");
+const { createKey, revokeKey } = require("./key-manager");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -153,6 +155,103 @@ app.get("/v1/usage", authenticateKey, (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// Admin auth helper
+// ---------------------------------------------------------------------------
+function validateAdminKey(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
+  const key = authHeader.slice(7).trim();
+  const adminKey = process.env.SAFEPASTE_ADMIN_KEY || "sk_admin_dev_12345";
+  return key === adminKey;
+}
+
+// ---------------------------------------------------------------------------
+// POST /v1/keys — Create a new API key (admin only, requires database)
+// ---------------------------------------------------------------------------
+app.post("/v1/keys", async (req, res) => {
+  if (!validateAdminKey(req)) {
+    return res.status(401).json({
+      error: "unauthorized",
+      message: "Invalid admin key."
+    });
+  }
+
+  const { id, plan, rateLimit: rl } = req.body;
+
+  if (!id || typeof id !== "string" || id.trim().length === 0) {
+    return res.status(400).json({
+      error: "invalid_request",
+      message: "Request body must include an 'id' field (non-empty string)."
+    });
+  }
+
+  const keyString = generateKey("sp");
+  const row = await createKey(id.trim(), keyString, plan || "free", rl || 60);
+
+  if (!row) {
+    return res.status(503).json({
+      error: "service_unavailable",
+      message: "Database unavailable. Key management requires PostgreSQL."
+    });
+  }
+
+  // Add to in-memory cache immediately so it works right away
+  API_KEYS.set(keyString, {
+    id: row.id,
+    plan: row.plan,
+    rateLimit: row.rate_limit,
+    requestCount: 0,
+    windowStart: Date.now()
+  });
+
+  res.status(201).json({
+    id: row.id,
+    key: keyString,
+    plan: row.plan,
+    rateLimit: row.rate_limit,
+    createdAt: row.created_at
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /v1/keys/:id — Revoke an API key (admin only, requires database)
+// ---------------------------------------------------------------------------
+app.delete("/v1/keys/:id", async (req, res) => {
+  if (!validateAdminKey(req)) {
+    return res.status(401).json({
+      error: "unauthorized",
+      message: "Invalid admin key."
+    });
+  }
+
+  const revoked = await revokeKey(req.params.id);
+
+  if (revoked === null) {
+    return res.status(503).json({
+      error: "service_unavailable",
+      message: "Database unavailable. Key management requires PostgreSQL."
+    });
+  }
+
+  if (!revoked) {
+    return res.status(404).json({
+      error: "not_found",
+      message: `No active key found with id '${req.params.id}'.`
+    });
+  }
+
+  // Remove from in-memory cache so it stops working immediately
+  for (const [keyString, keyData] of API_KEYS.entries()) {
+    if (keyData.id === req.params.id) {
+      API_KEYS.delete(keyString);
+      break;
+    }
+  }
+
+  res.json({ message: "Key revoked." });
+});
+
+// ---------------------------------------------------------------------------
 // 404 catch-all
 // ---------------------------------------------------------------------------
 app.use((_req, res) => {
@@ -177,9 +276,16 @@ app.use((err, _req, res, _next) => {
 // Start (only when run directly, not when imported by tests)
 // ---------------------------------------------------------------------------
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`SafePaste API running on port ${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/v1/health`);
+  (async () => {
+    await initDb();
+    await initAuth();
+    app.listen(PORT, () => {
+      console.log(`SafePaste API running on port ${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/v1/health`);
+    });
+  })().catch((err) => {
+    console.error("Failed to start:", err);
+    process.exit(1);
   });
 }
 
