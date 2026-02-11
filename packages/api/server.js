@@ -174,11 +174,13 @@ app.use((err, _req, res, _next) => {
 });
 
 // ---------------------------------------------------------------------------
-// Start
+// Start (only when run directly, not when imported by tests)
 // ---------------------------------------------------------------------------
-app.listen(PORT, () => {
-  console.log(`SafePaste API running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/v1/health`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`SafePaste API running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/v1/health`);
+  });
+}
 
 module.exports = app;

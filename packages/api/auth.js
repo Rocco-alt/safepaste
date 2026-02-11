@@ -30,10 +30,15 @@ function registerKey(id, key, opts = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// Seed some demo keys for development
+// Seed keys from environment variables (with dev fallbacks)
+// In production, set SAFEPASTE_DEMO_KEY and SAFEPASTE_PRO_KEY in your host
+// (e.g. Railway Variables tab). Locally, the defaults work out of the box.
 // ---------------------------------------------------------------------------
-registerKey("demo", "sp_demo_key_12345", { plan: "free", rateLimit: 30 });
-registerKey("test-pro", "sp_pro_key_67890", { plan: "pro", rateLimit: 300 });
+const DEMO_KEY = process.env.SAFEPASTE_DEMO_KEY || "sp_demo_key_12345";
+const PRO_KEY  = process.env.SAFEPASTE_PRO_KEY  || "sp_pro_key_67890";
+
+registerKey("demo", DEMO_KEY, { plan: "free", rateLimit: 30 });
+registerKey("test-pro", PRO_KEY, { plan: "pro", rateLimit: 300 });
 
 /**
  * Generate a new API key with the SafePaste prefix.

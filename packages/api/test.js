@@ -4,7 +4,7 @@
 const http = require("http");
 const app = require("./server");
 
-const API_KEY = "sp_demo_key_12345";
+const API_KEY = process.env.SAFEPASTE_DEMO_KEY || "sp_demo_key_12345";
 const PORT = 0; // random available port
 
 let server;
