@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "SafePaste — AI Paste Shield",
+  "version": "1.2.0",
+  "description": "Warns you when pasted text may manipulate AI behavior (prompt injection). Runs locally with no data collection.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "options_page": "settings.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://copilot.microsoft.com/*",
+        "https://chat.groq.com/*",
+        "https://console.groq.com/*",
+        "https://grok.com/*"
+      ],
+      "js": ["patterns.js", "detector.js", "content.js"],
+      "css": ["ui.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage", "activeTab"]
+}

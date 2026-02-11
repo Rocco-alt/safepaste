@@ -1,0 +1,26 @@
+SafePaste — Changelog
+
+1.2.0
+- Added browser popup for quick status view and per-site toggle (click the SafePaste icon).
+- Added icon badge: green "ON" when active on an AI chat tab, gray "OFF" when disabled.
+- Added service worker (background.js) for badge management.
+- 10 new detection patterns (19 total): "from now on" overrides, DAN/developer mode jailbreaks,
+  markdown image exfiltration, HTML img exfiltration, "new instructions" claims,
+  "do not follow previous" overrides, unrestricted roleplay requests, secrecy framing,
+  encoding/obfuscation references, output-constraining attacks.
+- Shadow DOM support: MutationObserver scans for open shadow roots and attaches paste listeners
+  directly, improving reliability on sites like Gemini.
+- No new permissions added.
+
+1.1.0
+- Added Grok support (grok.com) with content script injection and settings toggle.
+- Post-paste fallback for Grok: if clipboard text is not available (e.g., right-click paste),
+  SafePaste lets the native paste through, detects the inserted text, and shows "Undo paste / Keep".
+- Settings page updated with Grok toggle and explanatory note.
+
+1.0.0
+- Launch release.
+- Paste interception + warning modal across supported AI chat sites.
+- Local-only detection with no analytics or network requests.
+- Strict mode + threshold controls + per-site toggles.
+- Added Groq support (chat.groq.com, console.groq.com).

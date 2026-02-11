@@ -1,0 +1,28 @@
+SafePaste Privacy Policy
+
+SafePaste is a local-only browser extension. It does not collect, transmit, sell, or share personal data.
+
+What SafePaste does:
+- Detects paste events in supported AI chat input fields.
+- Analyzes pasted text locally in your browser using rule-based checks.
+- Shows a warning if the pasted text appears risky, and lets you cancel or paste anyway.
+- Displays a toolbar popup showing SafePaste's status on the current site.
+- Shows an icon badge ("ON" or "OFF") indicating whether SafePaste is active on the current tab.
+
+What SafePaste does NOT do:
+- No accounts or login.
+- No tracking or analytics.
+- No network requests or remote servers.
+- No storage of pasted text.
+- No analysis of uploaded images or screenshots (pasted text only).
+- The service worker (background.js) manages only the icon badge and makes no network requests.
+
+Data storage:
+- SafePaste stores only your settings (enabled/disabled, strict mode, warning threshold, site toggles) in Chrome local storage.
+
+Permissions:
+- "storage" — Used to save your settings locally. No data is sent externally.
+- "activeTab" — Used only so the toolbar popup can display the current site name. No data is read or sent.
+
+Contact:
+Use the support contact on the Chrome Web Store listing to reach the developer.

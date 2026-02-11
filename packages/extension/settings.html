@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>SafePaste Settings</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      padding: 16px;
+      max-width: 760px;
+      margin: 0 auto;
+      color: #111;
+    }
+    h1 { font-size: 22px; margin: 0 0 10px 0; }
+    .muted { color: rgba(0,0,0,0.65); line-height: 1.45; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 12px 0;
+      background: white;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .site {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.03);
+    }
+    .footer {
+      margin-top: 18px;
+      font-size: 13px;
+    }
+    code { background: rgba(0,0,0,0.04); padding: 2px 6px; border-radius: 6px; }
+    select {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.2);
+      background: white;
+      font-size: 14px;
+    }
+    .small { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>SafePaste Settings</h1>
+  <div class="muted">
+    SafePaste checks <strong>pasted text only</strong> locally in your browser. No accounts. No tracking. No data sent anywhere.
+    <br />
+    It does <strong>not</strong> analyze uploaded images or screenshots directly. If you copy text from an image using OCR, SafePaste can check it when you paste.
+  </div>
+
+  <div class="card">
+    <label><input id="enabled" type="checkbox" /> Enable SafePaste</label>
+    <label><input id="strictMode" type="checkbox" /> Strict mode (warn more often)</label>
+
+    <div class="row" style="margin-top:10px;">
+      <div class="small"><strong>Show warnings when risk is:</strong></div>
+      <select id="warnThresholdMode">
+        <option value="yellow">Yellow or Red (recommended)</option>
+        <option value="red">Red only</option>
+        <option value="off">Never (disable warnings)</option>
+      </select>
+    </div>
+
+    <div class="muted small" style="margin-top:8px;">
+      SafePaste is a safety aid, not a guarantee. It may miss attacks or flag harmless text.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 8px 0; font-size:16px;">Sites</h2>
+
+    <div class="site">
+      <label><input class="siteToggle" data-host="chatgpt.com" type="checkbox" /> ChatGPT (<code>chatgpt.com</code>)</label>
+      <label><input class="siteToggle" data-host="chat.openai.com" type="checkbox" /> ChatGPT legacy (<code>chat.openai.com</code>)</label>
+    </div>
+
+    <div class="site" style="margin-top:10px;">
+      <label><input class="siteToggle" data-host="claude.ai" type="checkbox" /> Claude (<code>claude.ai</code>)</label>
+      <label><input class="siteToggle" data-host="gemini.google.com" type="checkbox" /> Gemini (<code>gemini.google.com</code>)</label>
+      <label><input class="siteToggle" data-host="copilot.microsoft.com" type="checkbox" /> Copilot Chat (<code>copilot.microsoft.com</code>)</label>
+    </div>
+
+    <div class="site" style="margin-top:10px;">
+      <label><input class="siteToggle" data-host="chat.groq.com" type="checkbox" /> Groq Chat (<code>chat.groq.com</code>)</label>
+      <label><input class="siteToggle" data-host="console.groq.com" type="checkbox" /> GroqCloud Console/Playground (<code>console.groq.com</code>)</label>
+    </div>
+
+    <div class="site" style="margin-top:10px;">
+      <label><input class="siteToggle" data-host="grok.com" type="checkbox" /> Grok by xAI (<code>grok.com</code>)</label>
+    </div>
+
+    <div class="muted small" style="margin-top:8px;">
+      After changing site settings, refresh the chat tab (<code>Ctrl</code> + <code>R</code>).
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 8px 0; font-size:16px;">How it works</h2>
+    <ul style="margin: 6px 0 0 18px;">
+      <li>Watches for paste events in chat input boxes.</li>
+      <li>Looks for common prompt injection patterns.</li>
+      <li>Shows a warning when risk is above your threshold.</li>
+      <li>You can always cancel or paste anyway.</li>
+      <li>On some sites (like Grok), if clipboard text cannot be read before pasting, SafePaste will check it after and offer Undo/Keep.</li>
+    </ul>
+    <div class="muted small" style="margin-top:10px;">
+      Tip: quoting suspicious phrases for research can trigger warnings. If you trust the source, you can paste anyway.
+    </div>
+  </div>
+
+  <div class="footer muted">
+    If a site changes its URL structure, you may need to reload the extension.
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>
