@@ -1,0 +1,22 @@
+{
+  "name": "safepaste",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd packages/api && npm install",
+    "start": "cd packages/api && node server.js",
+    "test": "cd packages/api && node test.js",
+    "build:extension": "node scripts/build-extension.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+```
+
+4. Save and close.
+
+**Then in your terminal, run:**
+```
+git add package.json
+git commit -m "Add root package.json for Railway deployment"
+git push
