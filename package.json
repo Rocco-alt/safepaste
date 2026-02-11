@@ -2,9 +2,9 @@
   "name": "safepaste",
   "private": true,
   "scripts": {
-    "postinstall": "cd packages/api && npm install",
-    "start": "cd packages/api && node server.js",
-    "test": "cd packages/api && node test.js",
+    "postinstall": "npm install --prefix packages/api",
+    "start": "node packages/api/server.js",
+    "test": "node packages/api/test.js",
     "build:extension": "node scripts/build-extension.js"
   },
   "engines": {
