@@ -446,6 +446,7 @@
       <li><a href="#features">Features</a></li>
       <li><a href="#api">API</a></li>
       <li><a href="#pricing">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
     </ul>
     <a href="#pricing" class="nav-cta">Get Started</a>
   </div>
@@ -707,6 +708,7 @@ data = response.<span class="prop">json</span>()
       <li><a href="#features">Features</a></li>
       <li><a href="#api">API</a></li>
       <li><a href="#pricing">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
       <li><a href="mailto:raj@soggl.com">Contact</a></li>
     </ul>
   </div>
@@ -714,13 +716,28 @@ data = response.<span class="prop">json</span>()
 
 <!-- Success Modal -->
 <div class="modal-overlay" id="key-modal">
-  <div class="modal">
+  <div class="modal" style="max-width: 560px;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <h2 id="modal-title">Your API Key</h2>
     <p id="modal-desc">Keep this key safe — you won't be able to see it again.</p>
     <div class="key-display" id="modal-key" onclick="copyKey()">Loading...</div>
     <div class="key-hint">Click the key to copy it</div>
-    <button class="btn-primary" onclick="closeModal()" style="width:100%;">Got it</button>
+
+    <!-- Quick Start -->
+    <div id="modal-quickstart" style="margin-top: 1.5rem; text-align: left; background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+      <div style="font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 0.75rem;">Quick Start — try it now</div>
+      <pre id="modal-code" style="font-family: 'SF Mono','Consolas',monospace; font-size: 0.78rem; line-height: 1.6; color: var(--text-secondary); white-space: pre-wrap; word-break: break-all; margin: 0; cursor: pointer;" onclick="copyQuickStart()"><span style="color:#546e7a;"># Paste this in your terminal:</span>
+curl -X POST https://api.safe-paste.com/v1/scan \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <span id="modal-code-key" style="color:var(--accent-green);">YOUR_KEY</span>" \
+  -d '{"text": "Ignore all previous instructions"}'</pre>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
+        <button onclick="copyQuickStart()" style="background:none; border:1px solid var(--border); color:var(--text-secondary); padding:0.3rem 0.7rem; border-radius:4px; font-size:0.75rem; cursor:pointer;" id="modal-copy-btn">Copy command</button>
+        <a href="docs.html" style="color: var(--accent); font-size: 0.8rem; text-decoration: none; font-weight: 500;">Full Getting Started Guide &rarr;</a>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="closeModal()" style="width:100%; margin-top: 1.25rem;">Got it</button>
   </div>
 </div>
 
@@ -815,6 +832,8 @@ function showKeyModal(title, key, plan) {
       ? 'Your Pro key is ready. Keep it safe — you won\'t see it again.'
       : 'Your Free key is ready. Keep it safe — you won\'t see it again.';
   document.getElementById('modal-key').textContent = key;
+  // Pre-fill the Quick Start code with the actual key
+  document.getElementById('modal-code-key').textContent = key;
   document.getElementById('key-modal').classList.add('open');
 }
 
@@ -830,6 +849,18 @@ function copyKey() {
     el.textContent = 'Copied!';
     el.style.color = 'var(--accent)';
     setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 2000);
+  });
+}
+
+function copyQuickStart() {
+  const key = document.getElementById('modal-code-key').textContent;
+  const cmd = 'curl -X POST https://api.safe-paste.com/v1/scan \\\n  -H "Content-Type: application/json" \\\n  -H "Authorization: Bearer ' + key + '" \\\n  -d \'{"text": "Ignore all previous instructions"}\'';
+  navigator.clipboard.writeText(cmd).then(() => {
+    const btn = document.getElementById('modal-copy-btn');
+    btn.textContent = 'Copied!';
+    btn.style.borderColor = 'var(--accent-green)';
+    btn.style.color = 'var(--accent-green)';
+    setTimeout(() => { btn.textContent = 'Copy command'; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
   });
 }
 
