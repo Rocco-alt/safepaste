@@ -365,6 +365,57 @@
     .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
     .footer-links a:hover { color: var(--text-primary); }
 
+    /* ── FORMS ── */
+    .signup-form {
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .form-input {
+      width: 100%; padding: 0.7rem 1rem; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--bg-primary);
+      color: var(--text-primary); font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-input::placeholder { color: var(--text-secondary); }
+    .signup-result {
+      margin-top: 0.75rem; padding: 1rem; border-radius: 8px;
+      font-size: 0.85rem; word-break: break-all;
+    }
+    .signup-result.success {
+      background: rgba(0,230,138,0.1); border: 1px solid rgba(0,230,138,0.3); color: var(--accent-green);
+    }
+    .signup-result.error {
+      background: rgba(255,68,102,0.1); border: 1px solid rgba(255,68,102,0.3); color: var(--accent-red);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2.5rem; max-width: 480px; width: 90%; text-align: center;
+      position: relative;
+    }
+    .modal h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .modal p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+    .modal .key-display {
+      background: var(--bg-code); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.85rem;
+      word-break: break-all; margin-bottom: 1.5rem; color: var(--accent-green);
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .modal .key-display:hover { border-color: var(--accent); }
+    .modal .key-hint { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; color: var(--text-secondary);
+      font-size: 1.5rem; cursor: pointer;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .nav-links { display: none; }
@@ -599,7 +650,11 @@ data = response.<span class="prop">json</span>()
           <li><span class="check">&#10003;</span> Risk scoring &amp; categories</li>
           <li><span class="check">&#10003;</span> Community support</li>
         </ul>
-        <a href="mailto:raj@soggl.com?subject=SafePaste%20Free%20API%20Key" class="price-btn outline">Get Free Key</a>
+        <div class="signup-form" id="free-form">
+          <input type="email" id="free-email" placeholder="you@company.com" class="form-input" />
+          <button onclick="handleFreeSignup()" class="price-btn outline">Get Free Key</button>
+        </div>
+        <div id="free-result" class="signup-result" style="display:none;"></div>
       </div>
 
       <div class="price-card featured">
@@ -614,7 +669,7 @@ data = response.<span class="prop">json</span>()
           <li><span class="check">&#10003;</span> Strict mode &amp; custom options</li>
           <li><span class="check">&#10003;</span> Priority email support</li>
         </ul>
-        <a href="mailto:raj@soggl.com?subject=SafePaste%20Pro%20Plan" class="price-btn primary">Start Pro Trial</a>
+        <button onclick="handleProCheckout()" class="price-btn primary">Start Pro Plan</button>
       </div>
 
       <div class="price-card">
@@ -639,7 +694,7 @@ data = response.<span class="prop">json</span>()
   <h2>Ready to Secure Your AI Workflows?</h2>
   <p>Get started with SafePaste in under 5 minutes. No credit card required.</p>
   <div class="hero-buttons">
-    <a href="mailto:raj@soggl.com?subject=SafePaste%20API%20Key%20Request" class="btn-primary">Get Your API Key</a>
+    <a href="#pricing" class="btn-primary">Get Your API Key</a>
     <a href="#api" class="btn-secondary">Read the Docs</a>
   </div>
 </section>
@@ -657,7 +712,21 @@ data = response.<span class="prop">json</span>()
   </div>
 </footer>
 
+<!-- Success Modal -->
+<div class="modal-overlay" id="key-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h2 id="modal-title">Your API Key</h2>
+    <p id="modal-desc">Keep this key safe — you won't be able to see it again.</p>
+    <div class="key-display" id="modal-key" onclick="copyKey()">Loading...</div>
+    <div class="key-hint">Click the key to copy it</div>
+    <button class="btn-primary" onclick="closeModal()" style="width:100%;">Got it</button>
+  </div>
+</div>
+
 <script>
+const API_BASE = "https://api.safe-paste.com";
+
 function switchTab(tab) {
   document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
@@ -675,6 +744,132 @@ function copyCode() {
     });
   }
 }
+
+// ── Free signup ──
+async function handleFreeSignup() {
+  const emailInput = document.getElementById('free-email');
+  const resultDiv = document.getElementById('free-result');
+  const email = emailInput.value.trim();
+
+  if (!email || !email.includes('@')) {
+    resultDiv.style.display = 'block';
+    resultDiv.className = 'signup-result error';
+    resultDiv.textContent = 'Please enter a valid email address.';
+    return;
+  }
+
+  resultDiv.style.display = 'block';
+  resultDiv.className = 'signup-result';
+  resultDiv.style.background = 'var(--accent-glow)';
+  resultDiv.style.border = '1px solid rgba(0,200,255,0.3)';
+  resultDiv.style.color = 'var(--accent)';
+  resultDiv.textContent = 'Creating your key...';
+
+  try {
+    const res = await fetch(API_BASE + '/v1/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.apiKey) {
+      resultDiv.style.display = 'none';
+      showKeyModal('Free API Key Created!', data.apiKey, 'free');
+      emailInput.value = '';
+    } else {
+      resultDiv.className = 'signup-result error';
+      resultDiv.textContent = data.message || 'Something went wrong. Please try again.';
+    }
+  } catch (err) {
+    resultDiv.className = 'signup-result error';
+    resultDiv.textContent = 'Network error. Please try again.';
+  }
+}
+
+// ── Pro checkout ──
+async function handleProCheckout() {
+  try {
+    const res = await fetch(API_BASE + '/v1/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+
+    if (res.ok && data.url) {
+      window.location.href = data.url;
+    } else {
+      alert(data.message || 'Billing is not available right now. Please try again later.');
+    }
+  } catch (err) {
+    alert('Network error. Please try again.');
+  }
+}
+
+// ── Key modal ──
+function showKeyModal(title, key, plan) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-desc').textContent =
+    plan === 'pro'
+      ? 'Your Pro key is ready. Keep it safe — you won\'t see it again.'
+      : 'Your Free key is ready. Keep it safe — you won\'t see it again.';
+  document.getElementById('modal-key').textContent = key;
+  document.getElementById('key-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('key-modal').classList.remove('open');
+}
+
+function copyKey() {
+  const key = document.getElementById('modal-key').textContent;
+  navigator.clipboard.writeText(key).then(() => {
+    const el = document.getElementById('modal-key');
+    const orig = el.textContent;
+    el.textContent = 'Copied!';
+    el.style.color = 'var(--accent)';
+    setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 2000);
+  });
+}
+
+// ── Handle checkout success redirect ──
+(function checkForSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('checkout') === 'success') {
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      // Poll for the key (webhook may take a moment)
+      let attempts = 0;
+      const poll = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await fetch(API_BASE + '/v1/checkout/success?session_id=' + sessionId);
+          const data = await res.json();
+          if (data.status === 'ready') {
+            clearInterval(poll);
+            showKeyModal('Pro API Key Created!', data.apiKey, 'pro');
+            // Clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+          } else if (attempts > 15) {
+            clearInterval(poll);
+            alert('Your payment was successful! Your API key is being provisioned. Please check your email or contact raj@soggl.com.');
+            window.history.replaceState({}, '', window.location.pathname);
+          }
+        } catch (e) {
+          if (attempts > 15) {
+            clearInterval(poll);
+            alert('Payment received! Contact raj@soggl.com for your API key.');
+            window.history.replaceState({}, '', window.location.pathname);
+          }
+        }
+      }, 2000);
+    }
+  }
+  if (params.get('checkout') === 'cancelled') {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+})();
 </script>
 </body>
 </html>

@@ -7,6 +7,15 @@ const { analyze } = require("./detector");
 const { authenticateKey, generateKey, API_KEYS, initAuth } = require("./auth");
 const { initDb } = require("./db");
 const { createKey, revokeKey } = require("./key-manager");
+const {
+  initStripe,
+  getStripe,
+  createCustomersTable,
+  createCheckoutSession,
+  handleCheckoutCompleted,
+  createFreeKey,
+  getKeyBySession
+} = require("./billing");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +25,11 @@ const PORT = process.env.PORT || 3000;
 // ---------------------------------------------------------------------------
 app.use(helmet());
 app.use(cors());
+
+// Stripe webhooks need raw body for signature verification.
+// This MUST come before express.json() so the webhook route gets raw bytes.
+app.post("/v1/webhooks/stripe", express.raw({ type: "application/json" }));
+
 app.use(express.json({ limit: "100kb" }));
 
 // Global rate limit: 100 requests per minute per IP (fallback safety net)
@@ -252,6 +266,130 @@ app.delete("/v1/keys/:id", async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /v1/checkout — Create a Stripe Checkout session (public, no auth)
+// ---------------------------------------------------------------------------
+app.post("/v1/checkout", async (req, res) => {
+  const { email } = req.body || {};
+  const websiteUrl = process.env.WEBSITE_URL || "https://www.safe-paste.com";
+
+  const result = await createCheckoutSession(
+    email || null,
+    `${websiteUrl}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+    `${websiteUrl}?checkout=cancelled`
+  );
+
+  if (!result) {
+    return res.status(503).json({
+      error: "service_unavailable",
+      message: "Billing is not configured."
+    });
+  }
+
+  res.json({ url: result.url, sessionId: result.sessionId });
+});
+
+// ---------------------------------------------------------------------------
+// POST /v1/signup — Create a free API key (public, no auth)
+// ---------------------------------------------------------------------------
+app.post("/v1/signup", async (req, res) => {
+  const { email } = req.body || {};
+
+  if (!email || typeof email !== "string" || !email.includes("@")) {
+    return res.status(400).json({
+      error: "invalid_request",
+      message: "A valid email address is required."
+    });
+  }
+
+  const result = await createFreeKey(email.trim().toLowerCase());
+
+  if (!result) {
+    return res.status(503).json({
+      error: "service_unavailable",
+      message: "Database unavailable. Please try again later."
+    });
+  }
+
+  res.status(201).json({
+    message: "Your free API key has been created.",
+    email: result.email,
+    apiKey: result.apiKey,
+    plan: "free",
+    rateLimit: 30
+  });
+});
+
+// ---------------------------------------------------------------------------
+// POST /v1/webhooks/stripe — Handle Stripe webhook events
+// ---------------------------------------------------------------------------
+app.post("/v1/webhooks/stripe", async (req, res) => {
+  const stripe = getStripe();
+  if (!stripe) {
+    return res.status(503).send("Billing not configured");
+  }
+
+  const sig = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    if (webhookSecret && sig) {
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } else {
+      // No webhook secret — parse raw body (dev/testing only)
+      event = JSON.parse(req.body.toString());
+    }
+  } catch (err) {
+    console.error("[Webhook] Signature verification failed:", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case "checkout.session.completed": {
+      const session = event.data.object;
+      await handleCheckoutCompleted(session);
+      break;
+    }
+    default:
+      console.log(`[Webhook] Unhandled event type: ${event.type}`);
+  }
+
+  res.json({ received: true });
+});
+
+// ---------------------------------------------------------------------------
+// GET /v1/checkout/success — Retrieve API key after successful payment
+// ---------------------------------------------------------------------------
+app.get("/v1/checkout/success", async (req, res) => {
+  const { session_id } = req.query;
+
+  if (!session_id) {
+    return res.status(400).json({
+      error: "invalid_request",
+      message: "Missing session_id parameter."
+    });
+  }
+
+  const result = await getKeyBySession(session_id);
+
+  if (!result) {
+    return res.json({
+      status: "pending",
+      message: "Your key is being provisioned. Please refresh in a few seconds."
+    });
+  }
+
+  res.json({
+    status: "ready",
+    email: result.email,
+    apiKey: result.apiKey,
+    plan: result.plan
+  });
+});
+
+// ---------------------------------------------------------------------------
 // 404 catch-all
 // ---------------------------------------------------------------------------
 app.use((_req, res) => {
@@ -278,7 +416,9 @@ app.use((err, _req, res, _next) => {
 if (require.main === module) {
   (async () => {
     await initDb();
+    await createCustomersTable();
     await initAuth();
+    initStripe();
     app.listen(PORT, () => {
       console.log(`SafePaste API running on port ${PORT}`);
       console.log(`Health check: http://localhost:${PORT}/v1/health`);
