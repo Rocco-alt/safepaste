@@ -5,3 +5,12 @@ node_modules/
 *.patch
 .DS_Store
 Thumbs.db
+
+# Sensitive files — NEVER commit
+SAFEPASTE API KEYS.docx
+
+# Marketing/demo assets (not source code)
+*.png
+*.docx
+SafePaste-Release/
+SafePaste-1.0.0 test unzip/
