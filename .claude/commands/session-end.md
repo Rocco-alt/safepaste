@@ -49,13 +49,13 @@ Keep MEMORY.md under 50 lines. If over, move detail to topic files.
 - Security discoveries or novel attack observations → append to docs/security/research-log.md
 - New backlog items identified → add to docs/backlog.md
 
-## 8. Commit
+## 8. Commit and Push
 If there are uncommitted changes:
 - Stage and commit with a descriptive message
-- Do NOT push unless the user asks
+- Push to origin
 
 ## 9. Confirm Handoff
 Tell the user:
 - What was recorded
 - What the next session should start with
-- Whether there are uncommitted or unpushed changes
+- Confirm the push succeeded
