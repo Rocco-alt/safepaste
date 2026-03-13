@@ -57,7 +57,7 @@ This project uses a structured session workflow for continuity across developmen
 
 ### Slash Commands
 - `/session-start` — Orient at the beginning of a session (read memory, check git, present status)
-- `/session-end` — Record session work (update session log, memory, project state, commit)
+- `/session-end` — Record session work (update session log, memory, project state, commit, push)
 - `/new-decision` — Record an architecture decision as an ADR in docs/architecture/decisions/
 - `/backlog-add` — Add an item to docs/backlog.md
 - `/feature-closeout` — Close out a completed feature (update backlog, status, changelog)
