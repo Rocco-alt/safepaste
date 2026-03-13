@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0
-**Last updated:** Session #1 (2026-03-12)
+**Last updated:** Session #3 (2026-03-13)
 
 ## What's Live
 
@@ -24,6 +24,15 @@
 - Pro tier Stripe checkout + webhook provisioning
 - 19 detection patterns with weighted scoring and benign context dampening
 
+## Dataset Pipeline
+
+- 69 curated prompt-injection examples across 17 attack categories + 10 benign
+- 17 RAG-injection examples across 7 categories
+- Pipeline scripts: validate.js, evaluate.js, diagnose.js, stats.js, view.js
+- Shared library: schema.js, safety.js, io.js, categories.js, dedup.js, partition.js
+- Evaluation: P=1.0, R=1.0, 0 FP, 0 FN on curated set
+- 19/19 patterns triggered; 7 undetected attack classes identified as detection gaps
+
 ## What's Not Working / Incomplete
 
 - No automated tests for the extension (only API has tests)
@@ -31,3 +40,4 @@
 - No monitoring or alerting for the API
 - In-memory rate limiting resets on server restart
 - No user feedback mechanism for false positives/negatives
+- Dataset mutation pipeline not yet implemented (Phase 2)

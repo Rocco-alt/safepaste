@@ -6,7 +6,12 @@
     "start": "node packages/api/server.js",
     "test": "node packages/api/test.js",
     "build:extension": "node scripts/build-extension.js",
-    "migrate": "node packages/api/db.js"
+    "migrate": "node packages/api/db.js",
+    "validate:dataset": "node scripts/dataset/validate.js datasets/prompt-injection/",
+    "evaluate:dataset": "node scripts/dataset/evaluate.js datasets/prompt-injection/",
+    "stats:dataset": "node scripts/dataset/stats.js datasets/prompt-injection/",
+    "view:dataset": "node scripts/dataset/view.js datasets/prompt-injection/curated/",
+    "diagnose:dataset": "node scripts/dataset/diagnose.js datasets/prompt-injection/curated/"
   },
   "engines": {
     "node": ">=18.0.0"

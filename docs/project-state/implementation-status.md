@@ -12,6 +12,24 @@
 | OCR heuristic | Done | Detects OCR-like text characteristics |
 | ML-based detection | Not started | Future enhancement — see backlog |
 
+## Dataset Pipeline
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Shared library (6 modules) | Done | schema, safety, io, categories, dedup, partition |
+| Validation script | Done | validate.js — strict mode, licensing checks, ID uniqueness |
+| Evaluation script | Done | evaluate.js — precision/recall/FP/FN, --partition flag, --json |
+| Diagnostic script | Done | diagnose.js — pattern coverage, score distribution, category×score |
+| Stats script | Done | stats.js — growth metrics, category/context distribution |
+| View script | Done | view.js — safe escaped viewer, table/json/csv output |
+| Curated dataset (PI) | Done | 69 examples, 17 categories, context_type metadata |
+| Curated dataset (RAG) | Done | 17 examples, 7 categories |
+| Mutation pipeline | Not started | Phase 2 — 7 deterministic strategies |
+| Merge + partitioning | Not started | Phase 2 — combine sources, assign train/val/benchmark |
+| Versioning | Not started | Phase 2 — immutable snapshots with benchmark freeze |
+| Ingestion adapters | Not started | Phase 3 — HuggingFace, GitHub, CSV, JSONL |
+| Telemetry collection | Not started | Phase 4 — PII stripping, sanitization |
+
 ## Extension
 
 | Feature | Status | Notes |
