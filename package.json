@@ -11,7 +11,10 @@
     "evaluate:dataset": "node scripts/dataset/evaluate.js datasets/prompt-injection/",
     "stats:dataset": "node scripts/dataset/stats.js datasets/prompt-injection/",
     "view:dataset": "node scripts/dataset/view.js datasets/prompt-injection/curated/",
-    "diagnose:dataset": "node scripts/dataset/diagnose.js datasets/prompt-injection/curated/"
+    "diagnose:dataset": "node scripts/dataset/diagnose.js datasets/prompt-injection/curated/",
+    "mutate:dataset": "node scripts/dataset/mutate.js",
+    "merge:dataset": "node scripts/dataset/merge.js",
+    "version:dataset": "node scripts/dataset/version.js"
   },
   "engines": {
     "node": ">=18.0.0"

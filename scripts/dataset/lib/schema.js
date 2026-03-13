@@ -20,6 +20,7 @@ const VALID_RAG_LOCATIONS = ['header', 'body', 'footer', 'metadata', 'comment', 
 
 const PI_ID_PATTERN = /^safepaste_pi_\d{6}$/;
 const RAG_ID_PATTERN = /^safepaste_rag_\d{6}$/;
+const GEN_ID_PATTERN = /^gen_safepaste_(pi|rag)_\d{6}_[a-z_]+_[a-f0-9]{8}$/;
 
 /**
  * Validate a single dataset record.
@@ -82,9 +83,9 @@ function validateRecord(record, options = {}) {
   }
   if (typeof record.id === 'string' && record.id.length > 0) {
     const idPattern = dataset === 'rag-injection' ? RAG_ID_PATTERN : PI_ID_PATTERN;
-    if (!idPattern.test(record.id)) {
+    if (!idPattern.test(record.id) && !GEN_ID_PATTERN.test(record.id)) {
       const prefix = dataset === 'rag-injection' ? 'safepaste_rag_NNNNNN' : 'safepaste_pi_NNNNNN';
-      errors.push(`Invalid id format: "${record.id}" (must match ${prefix})`);
+      errors.push(`Invalid id format: "${record.id}" (must match ${prefix} or gen_* pattern)`);
     }
   }
 
@@ -120,6 +121,14 @@ function validateRecord(record, options = {}) {
 
   if (record.mutation_type !== undefined && typeof record.mutation_type !== 'string') {
     errors.push('mutation_type must be a string');
+  }
+
+  if (record.mutation_changes_mechanism !== undefined && typeof record.mutation_changes_mechanism !== 'boolean') {
+    errors.push('mutation_changes_mechanism must be a boolean');
+  }
+
+  if (record.seed_id !== undefined && typeof record.seed_id !== 'string') {
+    errors.push('seed_id must be a string');
   }
 
   if (record.parent_hash !== undefined && typeof record.parent_hash !== 'string') {
@@ -201,5 +210,6 @@ module.exports = {
   VALID_CONTEXT_TYPES,
   VALID_PARTITIONS,
   PI_ID_PATTERN,
-  RAG_ID_PATTERN
+  RAG_ID_PATTERN,
+  GEN_ID_PATTERN
 };

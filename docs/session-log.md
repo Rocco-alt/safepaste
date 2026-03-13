@@ -14,3 +14,8 @@
 - **Built:** Dataset pipeline Phase 0 (6 lib modules, validate.js, evaluate.js, diagnose.js, stats.js, view.js) + Phase 1 seed dataset (69 curated prompt-injection examples across 17 categories, 17 RAG-injection examples across 7 categories); added context_type field; 7 npm scripts
 - **Decided:** Quality over quantity for seed data (~70 not ~220); no pattern-mirroring in examples; difficulty balance (easy+hard per category); context_type metadata for wrapper analysis; mutation pipeline deferred to Phase 2 for volume expansion
 - **Next:** Implement Phase 2 — mutate.js (7 deterministic strategies), merge.js, version.js; carry forward mutation constraints (attack-only, ≤5 variants/seed, inherited fields, benchmark exclusion)
+
+## Session #4 — 2026-03-13
+- **Built:** Dataset pipeline Phase 2 — mutations.js (7 strategies), mutate.js, merge.js, version.js; 55 seeds → 247 generated variants; 316 total records partitioned; v0.1.0 snapshot created; evaluate.js extended with --group-by and module exports
+- **Decided:** Generated records excluded from benchmark (curated-only); benchmark pinning from previous versions for partition stability; 75/25 train/val split for generated; deterministic IDs (gen_<seed>_<strategy>_<hash8>)
+- **Next:** Phase 3 — ingestion adapters (HuggingFace, GitHub, CSV); or improve detection recall on mutation variants (encoding strategy 0% recall, context_embedding 49%)

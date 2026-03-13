@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0
-**Last updated:** Session #3 (2026-03-13)
+**Last updated:** Session #4 (2026-03-13)
 
 ## What's Live
 
@@ -28,9 +28,13 @@
 
 - 69 curated prompt-injection examples across 17 attack categories + 10 benign
 - 17 RAG-injection examples across 7 categories
-- Pipeline scripts: validate.js, evaluate.js, diagnose.js, stats.js, view.js
-- Shared library: schema.js, safety.js, io.js, categories.js, dedup.js, partition.js
-- Evaluation: P=1.0, R=1.0, 0 FP, 0 FN on curated set
+- 247 generated mutation variants (7 strategies: synonym, punctuation, whitespace, encoding, context_embedding, fragmentation, multilingual)
+- 316 total records partitioned: 238 training / 74 validation / 4 benchmark
+- Pipeline scripts: validate.js, evaluate.js, diagnose.js, stats.js, view.js, mutate.js, merge.js, version.js
+- Shared library: schema.js, safety.js, io.js, categories.js, dedup.js, partition.js, mutations.js
+- Curated evaluation: P=1.0, R=1.0, 0 FP, 0 FN
+- Full dataset evaluation: P=1.0, R=0.403 (mutations expose detection gaps by design)
+- Version v0.1.0 snapshot created with benchmark freeze enforcement
 - 19/19 patterns triggered; 7 undetected attack classes identified as detection gaps
 
 ## What's Not Working / Incomplete
@@ -40,4 +44,5 @@
 - No monitoring or alerting for the API
 - In-memory rate limiting resets on server restart
 - No user feedback mechanism for false positives/negatives
-- Dataset mutation pipeline not yet implemented (Phase 2)
+- Dataset ingestion adapters not yet implemented (Phase 3)
+- Mutation recall gaps: encoding (0%), context_embedding (49%), whitespace (0%)

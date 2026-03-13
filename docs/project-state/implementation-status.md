@@ -24,9 +24,9 @@
 | View script | Done | view.js — safe escaped viewer, table/json/csv output |
 | Curated dataset (PI) | Done | 69 examples, 17 categories, context_type metadata |
 | Curated dataset (RAG) | Done | 17 examples, 7 categories |
-| Mutation pipeline | Not started | Phase 2 — 7 deterministic strategies |
-| Merge + partitioning | Not started | Phase 2 — combine sources, assign train/val/benchmark |
-| Versioning | Not started | Phase 2 — immutable snapshots with benchmark freeze |
+| Mutation pipeline | Done | 7 strategies, 247 variants from 55 seeds, deterministic |
+| Merge + partitioning | Done | 316 records → 238 train / 74 val / 4 benchmark |
+| Versioning | Done | v0.1.0 snapshot, benchmark freeze enforcement |
 | Ingestion adapters | Not started | Phase 3 — HuggingFace, GitHub, CSV, JSONL |
 | Telemetry collection | Not started | Phase 4 — PII stripping, sanitization |
 

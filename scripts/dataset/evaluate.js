@@ -62,6 +62,8 @@ function main() {
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--partition' && args[i + 1]) {
       flags.partition = args[++i];
+    } else if (args[i] === '--group-by' && args[i + 1]) {
+      flags.groupBy = args[++i];
     } else if (args[i] === '--json') {
       flags.json = true;
     } else if (!args[i].startsWith('--')) {
@@ -110,9 +112,11 @@ function main() {
   const scoreDistribution = {
     '0-10': 0, '11-20': 0, '21-30': 0, '31-50': 0, '51-70': 0, '71-100': 0
   };
+  const perRecordResults = [];
 
   for (const record of records) {
     const result = analyzeText(record.text);
+    perRecordResults.push({ record, result });
 
     // Score distribution
     if (result.score <= 10) scoreDistribution['0-10']++;
@@ -288,6 +292,44 @@ function main() {
       console.log(`  [${fn.id}] ${fn.category} score=${fn.score}: ${fn.text}`);
     }
   }
+
+  // --group-by: per-group metrics
+  if (flags.groupBy) {
+    const groups = {};
+    for (const { record, result } of perRecordResults) {
+      const key = record[flags.groupBy] || '(none)';
+      if (!groups[key]) groups[key] = { tp: 0, tn: 0, fp: 0, fn: 0 };
+      const g = groups[key];
+      if (record.expected_flagged && result.flagged) g.tp++;
+      else if (!record.expected_flagged && !result.flagged) g.tn++;
+      else if (!record.expected_flagged && result.flagged) g.fp++;
+      else g.fn++;
+    }
+
+    if (flags.json) {
+      const groupReport = {};
+      for (const [key, g] of Object.entries(groups)) {
+        const p = g.tp + g.fp > 0 ? g.tp / (g.tp + g.fp) : 1;
+        const r = g.tp + g.fn > 0 ? g.tp / (g.tp + g.fn) : 1;
+        groupReport[key] = { ...g, precision: Math.round(p * 1000) / 1000, recall: Math.round(r * 1000) / 1000 };
+      }
+      console.log(JSON.stringify({ group_by: flags.groupBy, groups: groupReport }, null, 2));
+    } else {
+      console.log('');
+      console.log(`Group by: ${flags.groupBy}`);
+      console.log(`${'Group'.padEnd(28)} ${'TP'.padStart(4)} ${'TN'.padStart(4)} ${'FP'.padStart(4)} ${'FN'.padStart(4)}  Prec  Recall`);
+      console.log('-'.repeat(70));
+      for (const [key, g] of Object.entries(groups).sort()) {
+        const p = g.tp + g.fp > 0 ? g.tp / (g.tp + g.fp) : 1;
+        const r = g.tp + g.fn > 0 ? g.tp / (g.tp + g.fn) : 1;
+        console.log(`${key.padEnd(28)} ${String(g.tp).padStart(4)} ${String(g.tn).padStart(4)} ${String(g.fp).padStart(4)} ${String(g.fn).padStart(4)}  ${p.toFixed(3)}  ${r.toFixed(3)}`);
+      }
+    }
+  }
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { analyzeText, THRESHOLD };
