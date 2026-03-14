@@ -1,15 +1,15 @@
 # Current State
 
-**Version:** 1.2.0
-**Last updated:** Session #7 (2026-03-14)
+**Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core)
+**Last updated:** Session #8 (2026-03-14)
 
 ## What's Live
 
-- Chrome extension v1.2.0 (19 detection patterns, 9 categories, 8 AI sites)
+- Chrome extension v1.2.0 (36 detection patterns, 13 categories, 8 AI sites)
 - REST API v1 (scan, batch scan, patterns, usage, key management, free signup)
 - Landing page + API docs website
 - Stripe billing for Pro tier
-- @safepaste/core v0.1.0 SDK (ready to publish)
+- @safepaste/core v0.3.0 SDK (ready to publish)
 
 ## What's Working
 
@@ -23,42 +23,40 @@
 - PostgreSQL key persistence with in-memory fallback
 - Free tier signup (POST /v1/signup)
 - Pro tier Stripe checkout + webhook provisioning
-- 19 detection patterns with weighted scoring and benign context dampening
+- 36 detection patterns with weighted scoring and benign context dampening
 
-## @safepaste/core SDK (Session #6)
+## @safepaste/core SDK (Session #8)
 
 - `scanPrompt(text, options)` → `{ flagged, risk, score, threshold, matches[], meta{} }`
 - 8 low-level functions re-exported for advanced use
-- 19 PATTERNS exported for custom pipelines
+- 36 PATTERNS exported for custom pipelines
 - Zero dependencies, works in Node.js >=14 and modern browsers
-- 92 standalone unit tests, JSDoc on all exports
+- 166 standalone unit tests, JSDoc on all exports
 - API detector.js refactored to thin wrapper over scanPrompt()
 - Dataset scripts refactored to use scanPrompt()
-- 129 total tests (92 core + 37 API), all passing
+- 203 total tests (166 core + 37 API), all passing
 
-## Detection Engine (Session #5 hardening)
+## Detection Engine (Session #8 expansion)
 
-- 19 patterns with synonym-expanded regexes covering SYNONYM_MAP entries from mutations.js
-- normalizeText() collapses newlines + whitespace before pattern matching (fixed disconnect)
-- Dampening factor: 0.85 (was 0.75) — attacks scoring 42+ survive dampening
-- encoding.obfuscated weight: 35 (was 22) — standalone encoding references now flag
-- Newline evasion fixed: `system\nprompt`, `developer\nmode`, etc. now detect correctly
+- 36 patterns covering 13 of 17 attack categories (was 19 patterns / 9 categories)
+- 4 existing patterns expanded (ignore_previous, jailbreak.dan, system.prompt_reference, encoding.obfuscated)
+- 17 new patterns across 8 categories (6 FN fixes + 11 new category patterns)
+- normalizeText() collapses newlines + whitespace before pattern matching
+- Dampening factor: 0.85 — attacks scoring 42+ survive dampening
+- Exfiltration patterns (including repeat_above) never dampened
+- Benchmark: P=1.0, R=1.0 (was P=1.0, R=0.545)
+- Full eval: P=0.999, R=0.838, 1 FP (benign context edge case)
 
-## Dataset Pipeline (Session #7 expansion)
+## Dataset Pipeline (Session #8 versioning)
 
 - 111 curated prompt-injection examples across 17 attack categories + 10 benign
 - 17 RAG-injection examples across 7 categories
 - 424 generated mutation variants (7 strategies)
 - 535 total records partitioned: 392 training / 124 validation / 19 benchmark
-- All 17 categories represented in benchmark (was 3 categories with 5 records)
-- Benchmark P=1.0 (0 FP), R=0.545 (5 FN in detected categories, 5 not-currently-detected)
+- All 17 categories represented in benchmark
 - Pipeline scripts: validate.js, evaluate.js, diagnose.js, stats.js, view.js, mutate.js, merge.js, version.js
-- Shared library: schema.js, safety.js, io.js, categories.js, dedup.js, partition.js, mutations.js
-- evaluate.js fixed: per-category recall now uses TP (was using all-flagged, causing recall > 1.0)
-- walkJsonlFiles fixed: excludes versions/ directory by default (was double-counting snapshots)
-- Evaluator distinguishes mutation_label_divergence from genuine false positives
-- Version v0.2.0 snapshot with benchmark freeze enforcement (v0.1.0 pinned)
-- 7 undetected attack classes identified as detection gaps
+- Version v0.3.0 snapshot with benchmark freeze enforcement
+- 3 undetected attack classes: context_smuggling, translation_attack, instruction_fragmentation
 
 ## What's Not Working / Incomplete
 
@@ -68,6 +66,5 @@
 - In-memory rate limiting resets on server restart
 - No user feedback mechanism for false positives/negatives
 - Dataset ingestion adapters not yet implemented (Phase 3)
-- 7 undetected attack classes (context_smuggling, tool_call_injection, system_message_spoofing, roleplay_jailbreak, translation_attack, multi_turn_injection, instruction_fragmentation)
-- Benchmark has 19 records across all 17 categories but 5 FNs in detected categories need investigation
+- 3 undetected attack classes (context_smuggling, translation_attack, instruction_fragmentation)
 - @safepaste/core not yet published to npm

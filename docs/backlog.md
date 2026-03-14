@@ -16,7 +16,7 @@
 ## Low Priority
 
 - **Token smuggling detection** — Detect homograph/lookalike Unicode character attacks.
-- **Multi-turn manipulation detection** — Detect attacks that build trust across multiple messages.
+- **Multi-turn manipulation detection** — Improve recall for multi_turn_injection (currently 0.40) and roleplay_jailbreak (0.49). May require ML-based approach — regex ceiling reached for these categories.
 - **Image-based attack detection** — Analyze text embedded in screenshots/images.
 - **Browser-based ML inference** — Run ML models locally in the extension for sophisticated detection without API calls.
 - **Community pattern contributions** — Allow security researchers to submit new detection patterns.

@@ -4,10 +4,10 @@
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Regex pattern matching | Done | 19 patterns in 9 categories |
+| Regex pattern matching | Done | 36 patterns in 13 categories |
 | Weighted scoring | Done | Weights 15-40, capped at 100 |
 | Text normalization | Done | NFKC, zero-width char removal, whitespace collapse, lowercase |
-| Benign context dampening | Done | 25% reduction for educational content |
+| Benign context dampening | Done | 15% reduction for educational content |
 | Exfiltration protection | Done | Exfiltration patterns never dampened |
 | OCR heuristic | Done | Detects OCR-like text characteristics |
 | ML-based detection | Not started | Future enhancement — see backlog |
@@ -22,11 +22,11 @@
 | Diagnostic script | Done | diagnose.js — pattern coverage, score distribution, category×score |
 | Stats script | Done | stats.js — growth metrics, category/context distribution |
 | View script | Done | view.js — safe escaped viewer, table/json/csv output |
-| Curated dataset (PI) | Done | 69 examples, 17 categories, context_type metadata |
+| Curated dataset (PI) | Done | 111 examples, 17 categories, context_type metadata |
 | Curated dataset (RAG) | Done | 17 examples, 7 categories |
-| Mutation pipeline | Done | 7 strategies, 247 variants from 55 seeds, deterministic |
-| Merge + partitioning | Done | 316 records → 238 train / 74 val / 4 benchmark |
-| Versioning | Done | v0.1.0 snapshot, benchmark freeze enforcement |
+| Mutation pipeline | Done | 7 strategies, 424 variants from 97 seeds, deterministic |
+| Merge + partitioning | Done | 535 records → 392 train / 124 val / 19 benchmark |
+| Versioning | Done | v0.3.0 snapshot, benchmark freeze enforcement |
 | Ingestion adapters | Not started | Phase 3 — HuggingFace, GitHub, CSV, JSONL |
 | Telemetry collection | Not started | Phase 4 — PII stripping, sanitization |
 

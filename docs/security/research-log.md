@@ -37,3 +37,13 @@ This is a chronological, append-only log of security discoveries made during Saf
 **Classification:** Detection gap analysis
 **Observation:** context_smuggling (hiding instructions in legitimate business documents like meeting agendas, customer feedback, FAQ pages) fundamentally resists regex-based detection. Any regex that catches these would false-positive on real business text. This category serves as a natural benchmark for future ML-based detection and should remain `detected: false` in the regex engine.
 **Action:** Documented as inherent regex limitation. Category stays `detected: false`. Added diverse curated examples (8 total) for future ML training/evaluation.
+
+### 2026-03-14 — Session #8
+**Classification:** Detection pattern design insight
+**Observation:** When fixing false negatives via pattern stacking (multiple low-weight patterns combining to exceed threshold), each pattern must detect a genuinely distinct attack signal — not just be a "score padding" pattern. The anti-overfitting principle: no pattern should be designed to match *only* the benchmark record; each must match a *class* of attack text. Verified via FP sweep: 19 expected_flagged=false records, 0 score changes, 0 new false positives.
+**Action:** Applied in v0.3.0. Stacking fixes for secrecy_manipulation (false_privacy+speak_freely), instruction_chaining (step_enumeration+privilege_escalation), and role_hijacking (hijack_system+elevated_privileges) each detect independent attack dimensions.
+
+### 2026-03-14 — Session #8
+**Classification:** Detection gap analysis
+**Observation:** roleplay_jailbreak (0.49 recall) and multi_turn_injection (0.40 recall) are the hardest categories for regex detection. Roleplay attacks that avoid explicit "no restrictions/safety" language score 0 (subtle framing). Multi-turn attacks using conversational manipulation ("you said earlier...") often trigger only one pattern (25 or 22) and fall below threshold=35. These categories represent the practical ceiling for regex-based detection.
+**Action:** Documented. These categories are candidates for ML-based detection in Phase 2+ of the SDK roadmap.

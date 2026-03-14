@@ -34,3 +34,8 @@
 - **Built:** Deep review + evaluation bug fixes (recall > 1.0, version double-counting) + curated corpus expansion (42 new seeds, 69→111 curated, 316→535 total); benchmark now covers all 17 categories (was 3); partition dead-zone analysis (n=6,7 yield 0 benchmark due to ceil() rounding)
 - **Decided:** Corpus expansion before pattern development (avoid self-confirming benchmarks); context_smuggling stays `detected: false` (resists regex); seeds must be distinct attack mechanisms not paraphrases; evaluation must be trustworthy before scaling corpus
 - **Next:** Diagnostic review of 5 benchmark FNs in detected categories (instruction_chaining, jailbreak_bypass, role_hijacking, secrecy_manipulation, system_prompt_extraction) — analyze why scores fall below threshold, then propose pattern/weight adjustments
+
+## Session #8 — 2026-03-14
+- **Built:** v0.3.0 — Fixed 5 benchmark FNs (expanded 4 patterns, added 6 new); added 4 detected categories with 11 patterns (tool_call_injection, system_message_spoofing, roleplay_jailbreak, multi_turn_injection); 19→36 patterns, 9→13 detected categories; benchmark P=1.0 R=1.0 (was R=0.545); 203 tests (166 core + 37 API); v0.3.0 dataset snapshot
+- **Decided:** 3 categories stay undetected (context_smuggling, translation_attack, instruction_fragmentation); spoof.restrictions_lifted requires declarative form to avoid FP; exfiltrate.repeat_above uses exfiltrate. prefix for no-dampening
+- **Next:** Investigate 1 FP in full eval; improve recall for roleplay_jailbreak (0.49) and multi_turn_injection (0.40); SDK Phase 2 (@safepaste/test); CI/CD pipeline

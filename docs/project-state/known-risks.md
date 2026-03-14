@@ -2,7 +2,7 @@
 
 ## Security Risks
 
-- **Semantic attacks undetectable:** Regex cannot catch reasoning-chain attacks or context-dependent manipulation. An attacker who avoids all 19 known syntactic patterns can bypass detection entirely.
+- **Semantic attacks undetectable:** Regex cannot catch reasoning-chain attacks or context-dependent manipulation. An attacker who avoids all 36 known syntactic patterns can bypass detection entirely. Roleplay jailbreak (0.49 recall) and multi-turn injection (0.40 recall) demonstrate the practical ceiling of regex detection.
 - **No image analysis:** Attacks embedded in images (screenshots, OCR bait) are invisible to the extension and API.
 - **Pattern discovery via API:** Attackers could probe POST /v1/scan to systematically map detection boundaries and craft evasion payloads.
 - **Rate limiting is in-memory:** Resets on server restart, allowing burst abuse after deploys. Does not work across multiple server instances.
