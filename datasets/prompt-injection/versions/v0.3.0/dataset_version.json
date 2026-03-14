@@ -1,0 +1,55 @@
+{
+  "version": "0.3.0",
+  "date": "2026-03-14",
+  "counts": {
+    "total": 535,
+    "by_partition": {
+      "training": 392,
+      "validation": 124,
+      "benchmark": 19
+    },
+    "by_label": {
+      "attack": 521,
+      "benign": 11,
+      "edge-case": 3
+    },
+    "by_source": {
+      "manual": 111,
+      "synthetic_mutation": 424
+    },
+    "by_category": {
+      "benign": 10,
+      "context_smuggling": 43,
+      "data_exfiltration": 28,
+      "encoding_obfuscation": 28,
+      "instruction_chaining": 23,
+      "instruction_fragmentation": 44,
+      "instruction_override": 30,
+      "jailbreak_bypass": 24,
+      "meta_prompt_attacks": 24,
+      "multi_turn_injection": 42,
+      "role_hijacking": 30,
+      "roleplay_jailbreak": 41,
+      "secrecy_manipulation": 29,
+      "system_message_spoofing": 42,
+      "system_prompt_extraction": 23,
+      "tool_call_injection": 36,
+      "translation_attack": 38
+    }
+  },
+  "evaluation": {
+    "precision": 0.983,
+    "recall": 0.709,
+    "false_positive_rate": 0.128,
+    "false_negative_rate": 0.291,
+    "true_positives": 346,
+    "true_negatives": 41,
+    "false_positives": 6,
+    "false_negatives": 142
+  },
+  "detection": {
+    "patterns_count": 36,
+    "threshold": 35
+  },
+  "previous_version": "v0.2.0"
+}

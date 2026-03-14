@@ -17,9 +17,11 @@
 
 /**
  * Built-in prompt injection detection patterns.
- * 19 regex patterns organized by attack category:
+ * 36 regex patterns organized by attack category:
  * instruction_override, role_hijacking, system_prompt, exfiltration,
- * secrecy, jailbreak, obfuscation, instruction_chaining, meta.
+ * secrecy, jailbreak, obfuscation, instruction_chaining, meta,
+ * tool_call_injection, system_message_spoofing, roleplay_jailbreak,
+ * multi_turn_injection.
  *
  * @type {Pattern[]}
  */
@@ -30,7 +32,7 @@ const PATTERNS = [
     id: "override.ignore_previous",
     weight: 35,
     category: "instruction_override",
-    match: /\bignore\s+(?:(?:all|any|the|previous|prior|your)\s+){1,3}(instructions|directives|guidelines|directions|messages|rules)\b/i,
+    match: /\bignore\s+(?:(?:all|any|the|previous|prior|your|safety|content|existing|every)\s+){1,4}(instructions|directives|guidelines|directions|messages|rules)\b/i,
     explanation: "Tries to override earlier instructions."
   },
   {
@@ -84,13 +86,27 @@ const PATTERNS = [
     match: /\b(simulate|emulate|roleplay|role[\s-]?play)\b.{0,40}\b(unrestricted|uncensored|unfiltered|evil|malicious|without (rules|restrictions|limits|guidelines))\b/i,
     explanation: "Asks the AI to roleplay without safety restrictions."
   },
+  {
+    id: "role.privilege_escalation",
+    weight: 28,
+    category: "role_hijacking",
+    match: /\b(elevat(?:e|ed?|ing)\s+(?:your\s+)?(?:access|privileges?|permissions?)|escalat(?:e|ed?|ing)\s+(?:to\s+)?(?:admin|root|administrator)|grant(?:ed)?\s+elevated\s+(?:access|privileges?|permissions?))\b/i,
+    explanation: "Requests privilege escalation to higher access levels."
+  },
+  {
+    id: "role.elevated_privileges",
+    weight: 22,
+    category: "role_hijacking",
+    match: /\b(?:granted|given|assigned|have)\s+(?:\w+\s+){0,2}(?:elevated|admin(?:istrator)?|root|unrestricted|unlimited)\s+(?:privileges?|access|permissions?|clearance)\b/i,
+    explanation: "Claims to have been granted elevated privileges."
+  },
 
   // === System prompt references ===
   {
     id: "system.prompt_reference",
     weight: 40,
     category: "system_prompt",
-    match: /\b(system prompt|system instructions|developer message|developer instructions|hidden prompt|concealed prompt|internal prompt)\b/i,
+    match: /\b(system prompt|system instructions|system messages?|developer message|developer instructions|hidden prompt|concealed prompt|internal prompt)\b/i,
     explanation: "References system/developer instructions (often targeted by attacks)."
   },
 
@@ -116,6 +132,13 @@ const PATTERNS = [
     match: /<img\b[^>]*\bsrc\s*=\s*["']?https?:\/\//i,
     explanation: "Contains an HTML image tag that could silently send data to an external server."
   },
+  {
+    id: "exfiltrate.repeat_above",
+    weight: 35,
+    category: "exfiltration",
+    match: /\b(?:repeat|recite|reproduce|echo|reprint)\s+(?:\w+\s+){0,3}(?:above|before|prior|preceding)\b/i,
+    explanation: "Asks to repeat or reproduce content from above, often targeting system prompts."
+  },
 
   // === Secrecy ===
   {
@@ -132,6 +155,20 @@ const PATTERNS = [
     match: /\b(between (you and me|us only)|this (is|stays) (confidential|private|secret|between us)|off the record)\b/i,
     explanation: "Uses secrecy framing that may be part of a manipulation attempt."
   },
+  {
+    id: "secrecy.false_privacy",
+    weight: 22,
+    category: "secrecy",
+    match: /\b(?:private\s+(?:channel|session|conversation|chat|room)|no\s+(?:logging|monitoring|recording|surveillance)\b.{0,30}\b(?:active|enabled|here|running))\b/i,
+    explanation: "Creates a false sense of privacy to encourage disinhibition."
+  },
+  {
+    id: "secrecy.speak_freely",
+    weight: 22,
+    category: "secrecy",
+    match: /\b(?:speak\s+freely|you\s+can\s+be\s+(?:honest|open|candid|direct)\s+here|no\s+restrictions?\s+here|completely\s+confidential)\b/i,
+    explanation: "Encourages the AI to speak freely without restrictions."
+  },
 
   // === Jailbreak techniques ===
   {
@@ -145,7 +182,7 @@ const PATTERNS = [
     id: "jailbreak.dan",
     weight: 35,
     category: "jailbreak",
-    match: /\b(do anything now|jailbreak(ed)?|unlocked mode|developer mode|god mode)\b/i,
+    match: /\b(?:do anything now|jailbreak(?:ed)?|unlocked mode|developer mode|god mode|hypothetical mode|unrestricted mode)\b/i,
     explanation: "References a known jailbreak technique."
   },
 
@@ -154,7 +191,7 @@ const PATTERNS = [
     id: "encoding.obfuscated",
     weight: 35,
     category: "obfuscation",
-    match: /\b(base64|rot13|hex(adecimal)?)\s*(decode|encode|decrypt|convert)\b/i,
+    match: /\b(?:(?:base64|rot13|hex(?:adecimal)?)\s*(?:decode|encode|decrypt|convert)|(?:decode|encode|decrypt|convert)\b.{0,20}\b(?:base64|rot13|hex(?:adecimal)?))\b/i,
     explanation: "References text encoding/decoding which may hide malicious instructions."
   },
 
@@ -166,6 +203,13 @@ const PATTERNS = [
     match: /\bfollow (these|the) steps\b/i,
     explanation: "Uses step-by-step instruction chaining (sometimes used in attacks)."
   },
+  {
+    id: "instruction_chain.step_enumeration",
+    weight: 18,
+    category: "instruction_chaining",
+    match: /\bstep\s+\d\s*[:.].*\bstep\s+\d\s*[:.].*\bstep\s+\d\s*[:.]/i,
+    explanation: "Contains 3+ numbered step instructions (common in multi-step attack chains)."
+  },
 
   // === Meta ===
   {
@@ -174,6 +218,91 @@ const PATTERNS = [
     category: "meta",
     match: /\bprompt injection\b/i,
     explanation: "Mentions prompt injection (can be benign, but often appears in attacks)."
+  },
+
+  // === Tool call injection ===
+  {
+    id: "tool.xml_tool_tags",
+    weight: 35,
+    category: "tool_call_injection",
+    match: /(<tool_use>|<use_mcp_tool>|<\/tool_use>|<\/use_mcp_tool>|<tool_name>|<server_name>)/i,
+    explanation: "Contains XML tool/function call tags used to inject fake tool invocations."
+  },
+  {
+    id: "tool.json_function_call",
+    weight: 30,
+    category: "tool_call_injection",
+    match: /\b(?:function_call|tool_call)\b.{0,40}\b(?:name|function|arguments)\b/i,
+    explanation: "Contains JSON-style function/tool call structures."
+  },
+  {
+    id: "tool.execute_command",
+    weight: 35,
+    category: "tool_call_injection",
+    match: /\b(?:execute_command|shell_execute|exec_command|run_command|xp_cmdshell)\b/i,
+    explanation: "References command execution functions that could be injected."
+  },
+
+  // === System message spoofing ===
+  {
+    id: "spoof.system_delimiter",
+    weight: 35,
+    category: "system_message_spoofing",
+    match: /(\[system\]|<\|im_start\|>|<system_(?:instruction|message|prompt)|---\s*begin\s+(?:authorized\s+)?system)/i,
+    explanation: "Contains system message delimiters used to spoof system-level instructions."
+  },
+  {
+    id: "spoof.config_disable",
+    weight: 35,
+    category: "system_message_spoofing",
+    match: /\b(?:safety_filter|content_policy|content.?restriction)\s*[:=]\s*(?:disabled|off|none|permissive|unfiltered|suspended)\b/i,
+    explanation: "Attempts to disable safety filters via fake configuration directives."
+  },
+  {
+    id: "spoof.restrictions_lifted",
+    weight: 28,
+    category: "system_message_spoofing",
+    match: /\b(?:restrictions?|constraints?|filters?|guardrails?)\s+(?:have\s+been|are\s+(?:now|temporarily|permanently))\s+(?:lifted|removed|suspended|disabled|deactivated)\b/i,
+    explanation: "Claims that safety restrictions have been lifted or removed."
+  },
+
+  // === Roleplay jailbreak ===
+  {
+    id: "roleplay.fictional_ai",
+    weight: 35,
+    category: "roleplay_jailbreak",
+    match: /\b(?:you are|you were|you will be|you're)\b.{0,40}\ban?\s+(?:ai|model|assistant|chatbot)\b.{0,80}\b(?:without|no)\s+(?:any\s+)?(?:safety|ethical|content|restrictions?|filters?|guidelines?|boundaries|limits|measures)\b/i,
+    explanation: "Asks the AI to roleplay as an unrestricted AI without safety measures."
+  },
+  {
+    id: "roleplay.creative_bypass",
+    weight: 25,
+    category: "roleplay_jailbreak",
+    match: /\b(?:screenplay|novel|fiction|creative\s+writing|improv|tabletop)\b.{0,80}\b(?:no\s+(?:boundaries|restrictions?|filters?|rules?|limits)|without\s+(?:any\s+)?(?:boundaries|restrictions?|filters?|rules?|limits))\b/i,
+    explanation: "Uses creative writing framing to bypass safety restrictions."
+  },
+  {
+    id: "roleplay.no_restrictions_persona",
+    weight: 25,
+    category: "roleplay_jailbreak",
+    match: /\b(?:character|persona|role|identity|alter\s+ego)\b.{0,60}\b(?:no\s+(?:boundaries|restrictions?|filters?|rules?|limits)|without\s+(?:any\s+)?(?:boundaries|restrictions?|filters?|rules?|limits))\b/i,
+    explanation: "Creates a persona or character with no restrictions."
+  },
+
+  // === Multi-turn injection ===
+  {
+    id: "multi_turn.false_prior_agreement",
+    weight: 25,
+    category: "multi_turn_injection",
+    match: /\byou\s+(?:agreed|promised|confirmed|said|mentioned|showed|provided|identified|outlined|explained|recommended|suggested)\b.{0,60}\b(?:share|access|exception|help|remove|show|reveal|provide|give|output)\b/i,
+    explanation: "Falsely claims the AI previously agreed to share restricted content."
+  },
+  {
+    id: "multi_turn.continuation_claim",
+    weight: 22,
+    category: "multi_turn_injection",
+    match: /\b(?:continuing\s+(?:our|the|from)|let's\s+continue\s+(?:where|from)|as\s+we\s+(?:agreed|discussed)|(?:our|the)\s+(?:previous|earlier|last)\s+(?:conversation|session|chat|discussion))\b/i,
+    explanation: "Claims to be continuing a previous conversation to establish false context."
   }
 ];
 

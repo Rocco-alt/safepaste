@@ -23,25 +23,25 @@ const PROMPT_INJECTION_CATEGORIES = {
     name: 'Role Hijacking',
     description: 'Claims elevated authority or removes restrictions',
     detected: true,
-    patternIds: ['role.hijack_system', 'role.simulate']
+    patternIds: ['role.hijack_system', 'role.simulate', 'role.privilege_escalation', 'role.elevated_privileges']
   },
   system_prompt_extraction: {
     name: 'System Prompt Extraction',
     description: 'References to system/developer prompts',
     detected: true,
-    patternIds: ['system.prompt_reference']
+    patternIds: ['system.prompt_reference', 'exfiltrate.repeat_above']
   },
   secrecy_manipulation: {
     name: 'Secrecy Manipulation',
     description: 'Psychological manipulation for secrecy',
     detected: true,
-    patternIds: ['secrecy.do_not_reveal', 'secrecy.between_us']
+    patternIds: ['secrecy.do_not_reveal', 'secrecy.between_us', 'secrecy.false_privacy', 'secrecy.speak_freely']
   },
   data_exfiltration: {
     name: 'Data Exfiltration',
     description: 'Data exfiltration via markup or extraction commands',
     detected: true,
-    patternIds: ['exfiltrate.hidden', 'exfiltrate.markdown_image', 'exfiltrate.html_img']
+    patternIds: ['exfiltrate.hidden', 'exfiltrate.markdown_image', 'exfiltrate.html_img', 'exfiltrate.repeat_above']
   },
   jailbreak_bypass: {
     name: 'Jailbreak Bypass',
@@ -59,7 +59,7 @@ const PROMPT_INJECTION_CATEGORIES = {
     name: 'Instruction Chaining',
     description: 'Step-by-step instruction structures',
     detected: true,
-    patternIds: ['instruction_chain.follow_steps']
+    patternIds: ['instruction_chain.follow_steps', 'instruction_chain.step_enumeration']
   },
   meta_prompt_attacks: {
     name: 'Meta Prompt Attacks',
@@ -76,20 +76,20 @@ const PROMPT_INJECTION_CATEGORIES = {
   tool_call_injection: {
     name: 'Tool Call Injection',
     description: 'Injecting fake tool/function calls',
-    detected: false,
-    patternIds: []
+    detected: true,
+    patternIds: ['tool.xml_tool_tags', 'tool.json_function_call', 'tool.execute_command']
   },
   system_message_spoofing: {
     name: 'System Message Spoofing',
     description: 'Faking system-level messages or delimiters',
-    detected: false,
-    patternIds: []
+    detected: true,
+    patternIds: ['spoof.system_delimiter', 'spoof.config_disable', 'spoof.restrictions_lifted']
   },
   roleplay_jailbreak: {
     name: 'Roleplay Jailbreak',
     description: 'Using roleplay framing to bypass safety',
-    detected: false,
-    patternIds: []
+    detected: true,
+    patternIds: ['roleplay.fictional_ai', 'roleplay.creative_bypass', 'roleplay.no_restrictions_persona']
   },
   translation_attack: {
     name: 'Translation Attack',
@@ -100,8 +100,8 @@ const PROMPT_INJECTION_CATEGORIES = {
   multi_turn_injection: {
     name: 'Multi-Turn Injection',
     description: 'Attacks split across multiple conversation turns',
-    detected: false,
-    patternIds: []
+    detected: true,
+    patternIds: ['multi_turn.false_prior_agreement', 'multi_turn.continuation_claim']
   },
   instruction_fragmentation: {
     name: 'Instruction Fragmentation',

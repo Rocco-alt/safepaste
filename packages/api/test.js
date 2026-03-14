@@ -188,7 +188,7 @@ async function runTests() {
   console.log("\nPatterns listing:");
   {
     const r = await request("GET", "/v1/patterns");
-    assert("returns patterns", r.body.count === 19);
+    assert("returns patterns", r.body.count === 36);
     assert("patterns have categories", r.body.patterns.every((p) => p.category));
   }
 

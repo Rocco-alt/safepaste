@@ -1,6 +1,6 @@
 {
   "name": "@safepaste/core",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Prompt injection detection for AI applications. Lightweight regex-based engine with weighted scoring, benign-context dampening, and zero dependencies.",
   "main": "index.js",
   "files": [
