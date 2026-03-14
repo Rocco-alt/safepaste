@@ -9,8 +9,8 @@
 - REST API v1 (scan, batch scan, patterns, usage, key management, free signup)
 - Landing page + API docs website
 - Stripe billing for Pro tier
-- @safepaste/core v0.3.0 SDK (ready to publish)
-- @safepaste/test v0.1.0 CLI (attack simulation, 26 payloads, 13 categories, 88 tests)
+- @safepaste/core v0.3.0 SDK (published to npm)
+- @safepaste/test v0.1.0 CLI (published to npm — attack simulation, 26 payloads, 13 categories, 88 tests)
 
 ## What's Working
 

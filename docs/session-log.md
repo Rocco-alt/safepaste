@@ -46,9 +46,9 @@
 - **Next:** Investigate 1 FP in full eval; improve recall for roleplay_jailbreak (0.49) and multi_turn_injection (0.40); SDK Phase 2 (@safepaste/test)
 
 ## Session #11 — 2026-03-14
-- **Built:** SDK Phase 2 — @safepaste/test v0.1.0 attack simulation CLI (8 new files); 26 independently authored payloads across 13 detected categories, 3 injection strategies (prepend/append/wrap), 78 variants per run; programmatic API + CLI with 3 output formats (report/json/jsonl), CI/CD exit codes; 88 tests (291 total); updated 8 docs files (CLAUDE.md, repo-map, dependency-map, ADR-001, current-state, implementation-status, owners-guide, sdk-roadmap)
+- **Built:** SDK Phase 2 — @safepaste/test v0.1.0 attack simulation CLI (8 new files); 26 independently authored payloads across 13 detected categories, 3 injection strategies (prepend/append/wrap), 78 variants per run; programmatic API + CLI with 3 output formats (report/json/jsonl), CI/CD exit codes; 88 tests (291 total); updated 8 docs files; published to npm; confirmed @safepaste/core v0.3.0 already published
 - **Decided:** Payloads independently authored (not from curated dataset — separation of evaluation and tooling); @safepaste/core treated as black box (no pattern ID coupling); 80% default pass threshold (accounts for low-weight categories); zero external dependencies
-- **Next:** npm publish @safepaste/test; improve recall for weak categories (roleplay_jailbreak 0.49, multi_turn_injection 0.40); or SDK Phase 3 (@safepaste/guard)
+- **Next:** Improve recall for weak categories (roleplay_jailbreak 0.49, multi_turn_injection 0.40); or SDK Phase 3 (@safepaste/guard)
 
 ## Session #10 — 2026-03-14
 - **Built:** Deep review (full repo-grounded context reconstruction); fixed evaluate.js double-counting bug — was reading both source dirs (curated/generated) and partition dirs (training/validation/benchmark), inflating record count 2x (1075→535); corrected metrics: P=1.0 R=0.838 0 FP (not P=0.999 1 FP)
