@@ -19,3 +19,8 @@
 - **Built:** Dataset pipeline Phase 2 — mutations.js (7 strategies), mutate.js, merge.js, version.js; 55 seeds → 247 generated variants; 316 total records partitioned; v0.1.0 snapshot created; evaluate.js extended with --group-by and module exports
 - **Decided:** Generated records excluded from benchmark (curated-only); benchmark pinning from previous versions for partition stability; 75/25 train/val split for generated; deterministic IDs (gen_<seed>_<strategy>_<hash8>)
 - **Next:** Phase 3 — ingestion adapters (HuggingFace, GitHub, CSV); or improve detection recall on mutation variants (encoding strategy 0% recall, context_embedding 49%)
+
+## Session #5 — 2026-03-14
+- **Built:** Detection hardening — 9 regex synonym expansions, encoding weight 22→35, dampening 0.75→0.85, newline collapse in normalizeText(); fixed critical normalization-matching disconnect (findMatches now receives normalized text); added /deep-review slash command; evaluator mutation_label_divergence diagnostic; v0.2.0 dataset snapshot
+- **Decided:** normalizeText() must feed findMatches() (not raw text); expected_flagged is engine-independent ground truth (mutations inherit, no recomputation); encoding.obfuscated at w:35 is correct for middleware; mutation label divergence reported separately from FPs
+- **Next:** Phase 3 ingestion adapters; or expand curated corpus (benchmark has only 5 records); or tackle 7 undetected attack classes

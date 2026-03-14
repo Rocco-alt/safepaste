@@ -12,11 +12,11 @@
 
 ### How Scoring Works
 
-1. **Normalize text** — NFKC Unicode normalization, remove zero-width characters (U+200B-U+200D, U+FEFF), collapse whitespace, lowercase
-2. **Run all 19 patterns** against normalized text
+1. **Normalize text** — NFKC Unicode normalization, remove zero-width characters (U+200B-U+200D, U+FEFF), collapse newlines and whitespace to single spaces, lowercase
+2. **Run all 19 patterns** against normalized text (benign context and OCR heuristics use raw text)
 3. **Sum matched pattern weights** — each match contributes its weight (15-40)
 4. **Cap at 100** — maximum possible score regardless of how many patterns match
-5. **Apply benign context dampening** — if educational/demo/research context detected AND no exfiltration patterns matched, multiply score by 0.75
+5. **Apply benign context dampening** — if educational/demo/research context detected AND no exfiltration patterns matched, multiply score by 0.85
 6. **Compare against threshold:**
    - Normal mode: 35 (default)
    - Strict mode: 25 (more sensitive)
@@ -34,7 +34,7 @@
 Three layers work together:
 
 1. **Pattern weights** — ambiguous patterns score low (follow_steps: 15, between_us: 18); unambiguous patterns score high (prompt_reference: 40, exfiltrate.hidden: 40)
-2. **Benign context dampening** — educational/demo text gets 25% score reduction. Triggered by keywords like "for example", "demonstration", "research", "documentation", or by code fences/blockquotes combined with "prompt injection" mentions. Exfiltration patterns are NEVER dampened.
+2. **Benign context dampening** — educational/demo text gets 15% score reduction (0.85x multiplier). Triggered by keywords like "for example", "demonstration", "research", "documentation", or by code fences/blockquotes combined with "prompt injection" mentions. Exfiltration patterns are NEVER dampened.
 3. **User-configurable thresholds** — users choose sensitivity: normal (35), strict (25), red-only (60), or off
 
 ### OCR Heuristic

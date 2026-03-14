@@ -10,14 +10,14 @@ const PATTERNS = [
     id: "override.ignore_previous",
     weight: 35,
     category: "instruction_override",
-    match: /\bignore\s+(?:(?:all|any|the|previous|prior|your)\s+){1,3}(instructions|directions|messages|rules)\b/i,
+    match: /\bignore\s+(?:(?:all|any|the|previous|prior|your)\s+){1,3}(instructions|directives|guidelines|directions|messages|rules)\b/i,
     explanation: "Tries to override earlier instructions."
   },
   {
     id: "override.disregard",
     weight: 30,
     category: "instruction_override",
-    match: /\b(disregard|forget)\s+(?:(?:all|any|the|previous|prior|your)\s+){1,3}(instructions|directions|messages|rules)\b/i,
+    match: /\b(disregard|forget)\s+(?:(?:all|any|the|previous|prior|your)\s+){1,3}(instructions|directives|guidelines|directions|messages|rules)\b/i,
     explanation: "Tries to make the AI ignore prior instructions."
   },
   {
@@ -31,14 +31,14 @@ const PATTERNS = [
     id: "override.new_instructions",
     weight: 28,
     category: "instruction_override",
-    match: /\b(new instructions|updated instructions|revised instructions|here are your (new )?instructions)\b/i,
+    match: /\b((new|updated|revised) (instructions|directives)|here are your (new )?(instructions|directives))\b/i,
     explanation: "Claims to provide replacement instructions."
   },
   {
     id: "override.do_not_follow",
     weight: 28,
     category: "instruction_override",
-    match: /\bdo not (follow|obey|listen to)\b.{0,40}\b(previous|prior|above|original|earlier|old)\b/i,
+    match: /\b(do not (follow|obey|listen to)|stop following)\b.{0,40}\b(previous|prior|above|original|earlier|old)\b/i,
     explanation: "Tells the AI not to follow its original instructions."
   },
   {
@@ -54,7 +54,7 @@ const PATTERNS = [
     id: "role.hijack_system",
     weight: 32,
     category: "role_hijacking",
-    match: /\b(act as|you are now|pretend to be)\b.{0,60}\b(system|developer|administrator|root)\b/i,
+    match: /\b(act as|behave as|act like|you are now|pretend to be)\b.{0,60}\b(system|developer|administrator|root)\b/i,
     explanation: "Attempts to change the AI's role to something higher-privilege."
   },
   {
@@ -70,7 +70,7 @@ const PATTERNS = [
     id: "system.prompt_reference",
     weight: 40,
     category: "system_prompt",
-    match: /\b(system prompt|developer message|developer instructions|hidden prompt|internal prompt)\b/i,
+    match: /\b(system prompt|system instructions|developer message|developer instructions|hidden prompt|concealed prompt|internal prompt)\b/i,
     explanation: "References system/developer instructions (often targeted by attacks)."
   },
 
@@ -79,7 +79,7 @@ const PATTERNS = [
     id: "exfiltrate.hidden",
     weight: 40,
     category: "exfiltration",
-    match: /\b(reveal|show|print|output|display)\b.{0,40}\b(system prompt|developer message|hidden prompt|internal prompt|instructions)\b/i,
+    match: /\b(reveal|show|print|output|display|extract|retrieve)\b.{0,40}\b(system prompt|system instructions|developer message|hidden prompt|concealed prompt|internal prompt|instructions)\b/i,
     explanation: "Tries to extract hidden instructions."
   },
   {
@@ -102,7 +102,7 @@ const PATTERNS = [
     id: "secrecy.do_not_reveal",
     weight: 22,
     category: "secrecy",
-    match: /\b(do not reveal|don't reveal|keep (this|it) secret|do not tell anyone|do not mention this)\b/i,
+    match: /\b(do not reveal|don't reveal|keep (this|it) (secret|confidential)|do not tell anyone|do not mention this)\b/i,
     explanation: "Asks for secrecy or hiding content."
   },
   {
@@ -118,7 +118,7 @@ const PATTERNS = [
     id: "jailbreak.policy_bypass",
     weight: 28,
     category: "jailbreak",
-    match: /\b(bypass|override)\b.{0,40}\b(safety|policy|policies|rules|filters)\b/i,
+    match: /\b(bypass|override|circumvent|overwrite)\b.{0,40}\b(safety|policy|policies|rules|filters)\b/i,
     explanation: "Attempts to bypass safety or policy rules."
   },
   {
@@ -132,7 +132,7 @@ const PATTERNS = [
   // === Obfuscation ===
   {
     id: "encoding.obfuscated",
-    weight: 22,
+    weight: 35,
     category: "obfuscation",
     match: /\b(base64|rot13|hex(adecimal)?)\s*(decode|encode|decrypt|convert)\b/i,
     explanation: "References text encoding/decoding which may hide malicious instructions."

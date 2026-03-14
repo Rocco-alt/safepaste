@@ -13,6 +13,7 @@ const { escapeForDisplay } = require('./lib/safety');
 
 const PATTERNS = require('../../packages/shared/patterns');
 const {
+  normalizeText,
   findMatches,
   computeScore,
   isBenignContext,
@@ -24,7 +25,8 @@ const THRESHOLD = 35;
 
 function analyzeText(text) {
   const input = typeof text === 'string' ? text : '';
-  const matches = findMatches(input, PATTERNS);
+  const normalized = normalizeText(input);
+  const matches = findMatches(normalized, PATTERNS);
   const rawScore = computeScore(matches);
   const benign = isBenignContext(input);
   const exfiltrate = hasExfiltrationMatch(matches);

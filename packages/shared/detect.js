@@ -9,8 +9,8 @@ function normalizeText(text) {
   return text
     .normalize("NFKC")
     .replace(/[\u200B-\u200D\uFEFF]/g, "") // zero-width chars
+    .replace(/[\r\n]+/g, " ")
     .replace(/[ \t]+/g, " ")
-    .replace(/\r\n/g, "\n")
     .trim()
     .toLowerCase();
 }
@@ -106,7 +106,7 @@ function applyDampening(score, benign, hasExfiltrate) {
   var s = Number(score) || 0;
   if (!benign) return s;
   if (hasExfiltrate) return s; // never dampen explicit exfiltration
-  return Math.max(0, Math.min(100, Math.round(s * 0.75)));
+  return Math.max(0, Math.min(100, Math.round(s * 0.85)));
 }
 
 module.exports = {

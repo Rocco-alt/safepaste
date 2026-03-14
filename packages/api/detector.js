@@ -26,7 +26,7 @@ function analyze(text, options = {}) {
   const strict = !!options.strictMode;
 
   const normalized = normalizeText(input);
-  const matches = findMatches(input, PATTERNS);
+  const matches = findMatches(normalized, PATTERNS);
 
   const rawScore = computeScore(matches);
   const benign = isBenignContext(input);

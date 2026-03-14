@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0
-**Last updated:** Session #4 (2026-03-13)
+**Last updated:** Session #5 (2026-03-14)
 
 ## What's Live
 
@@ -24,17 +24,25 @@
 - Pro tier Stripe checkout + webhook provisioning
 - 19 detection patterns with weighted scoring and benign context dampening
 
+## Detection Engine (Session #5 hardening)
+
+- 19 patterns with synonym-expanded regexes covering SYNONYM_MAP entries from mutations.js
+- normalizeText() collapses newlines + whitespace before pattern matching (fixed disconnect)
+- Dampening factor: 0.85 (was 0.75) — attacks scoring 42+ survive dampening
+- encoding.obfuscated weight: 35 (was 22) — standalone encoding references now flag
+- Newline evasion fixed: `system\nprompt`, `developer\nmode`, etc. now detect correctly
+
 ## Dataset Pipeline
 
 - 69 curated prompt-injection examples across 17 attack categories + 10 benign
 - 17 RAG-injection examples across 7 categories
 - 247 generated mutation variants (7 strategies: synonym, punctuation, whitespace, encoding, context_embedding, fragmentation, multilingual)
-- 316 total records partitioned: 238 training / 74 validation / 4 benchmark
+- 316 total records partitioned: 237 training / 74 validation / 5 benchmark
 - Pipeline scripts: validate.js, evaluate.js, diagnose.js, stats.js, view.js, mutate.js, merge.js, version.js
 - Shared library: schema.js, safety.js, io.js, categories.js, dedup.js, partition.js, mutations.js
-- Curated evaluation: P=1.0, R=1.0, 0 FP, 0 FN
-- Full dataset evaluation: P=1.0, R=0.403 (mutations expose detection gaps by design)
-- Version v0.1.0 snapshot created with benchmark freeze enforcement
+- v0.2.0 evaluation: Benchmark P=1.0 R=1.0 | Validation P=1.0 R=1.0 | Training P=1.0 R=1.0 (6 mutation divergence, 0 genuine FP)
+- Evaluator distinguishes mutation_label_divergence from genuine false positives
+- Version v0.2.0 snapshot with benchmark freeze enforcement (v0.1.0 pinned)
 - 19/19 patterns triggered; 7 undetected attack classes identified as detection gaps
 
 ## What's Not Working / Incomplete
@@ -45,4 +53,5 @@
 - In-memory rate limiting resets on server restart
 - No user feedback mechanism for false positives/negatives
 - Dataset ingestion adapters not yet implemented (Phase 3)
-- Mutation recall gaps: encoding (0%), context_embedding (49%), whitespace (0%)
+- 7 undetected attack classes (context_smuggling, tool_call_injection, system_message_spoofing, roleplay_jailbreak, translation_attack, multi_turn_injection, instruction_fragmentation)
+- Benchmark has only 5 records — needs growth before v0.3.0

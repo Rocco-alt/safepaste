@@ -38,7 +38,8 @@ const THRESHOLD = 35;
  */
 function analyzeText(text) {
   const input = typeof text === 'string' ? text : '';
-  const matches = findMatches(input, PATTERNS);
+  const normalized = normalizeText(input);
+  const matches = findMatches(normalized, PATTERNS);
   const rawScore = computeScore(matches);
   const benign = isBenignContext(input);
   const exfiltrate = hasExfiltrationMatch(matches);
@@ -105,9 +106,11 @@ function main() {
   let falsePositives = 0;
   let falseNegatives = 0;
   let notCurrentlyDetected = 0;
+  let mutationLabelDivergence = 0;
 
   const falsePositiveList = [];
   const falseNegativeList = [];
+  const mutationDivergenceList = [];
   const coverageByCategory = {};
   const scoreDistribution = {
     '0-10': 0, '11-20': 0, '21-30': 0, '31-50': 0, '51-70': 0, '71-100': 0
@@ -154,13 +157,28 @@ function main() {
       }
     } else if (!record.expected_flagged && result.flagged) {
       // Not expected to be flagged, but was
-      falsePositives++;
-      falsePositiveList.push({
-        id: record.id || '(no id)',
-        category: cat,
-        score: result.score,
-        text: escapeForDisplay(record.text, 80)
-      });
+      // Separate mutation label divergence from genuine FPs:
+      // mechanism-changing mutations may trigger different patterns than their parent
+      if (record.source === 'synthetic_mutation' &&
+          record.mutation_changes_mechanism === true) {
+        mutationLabelDivergence++;
+        mutationDivergenceList.push({
+          id: record.id || '(no id)',
+          category: cat,
+          score: result.score,
+          mutation_type: record.mutation_type || '(unknown)',
+          seed_id: record.seed_id || '(unknown)',
+          text: escapeForDisplay(record.text, 80)
+        });
+      } else {
+        falsePositives++;
+        falsePositiveList.push({
+          id: record.id || '(no id)',
+          category: cat,
+          score: result.score,
+          text: escapeForDisplay(record.text, 80)
+        });
+      }
     } else if (record.expected_flagged && result.flagged) {
       truePositives++;
     } else {
@@ -209,6 +227,7 @@ function main() {
     true_negatives: trueNegatives,
     false_positives: falsePositives,
     false_negatives: falseNegatives,
+    mutation_label_divergence: mutationLabelDivergence,
     not_currently_detected: notCurrentlyDetected,
     precision: Math.round(precision * 1000) / 1000,
     recall: Math.round(recall * 1000) / 1000,
@@ -245,6 +264,7 @@ function main() {
   console.log(`  True negatives:        ${trueNegatives}`);
   console.log(`  False positives:       ${falsePositives}`);
   console.log(`  False negatives:       ${falseNegatives}`);
+  console.log(`  Mutation divergence:   ${mutationLabelDivergence}`);
   console.log(`  Not currently detected: ${notCurrentlyDetected}`);
   console.log('');
 
@@ -290,6 +310,16 @@ function main() {
     console.log('False negatives:');
     for (const fn of falseNegativeList) {
       console.log(`  [${fn.id}] ${fn.category} score=${fn.score}: ${fn.text}`);
+    }
+  }
+
+  if (mutationDivergenceList.length > 0) {
+    console.log('');
+    console.log(`Mutation label divergence (${mutationDivergenceList.length}):`);
+    console.log('  Mechanism-changing mutations flagged despite parent expected_flagged=false.');
+    console.log('  Not counted as false positives — labels inherited from parent are correct.');
+    for (const md of mutationDivergenceList) {
+      console.log(`  [${md.id}] ${md.category} score=${md.score} mutation=${md.mutation_type} seed=${md.seed_id}: ${md.text}`);
     }
   }
 

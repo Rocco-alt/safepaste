@@ -90,7 +90,7 @@
       var patterns = Array.isArray(window.SAFEPASTE_PATTERNS) ? window.SAFEPASTE_PATTERNS : [];
 
       var normalized = core.normalizeText(text);
-      var matches = core.findMatches(text, patterns);
+      var matches = core.findMatches(normalized, patterns);
 
       var rawScore = core.computeScore(matches);
       var ocrLike = core.looksLikeOCR(text);
