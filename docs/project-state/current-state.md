@@ -58,10 +58,17 @@
 - Version v0.3.0 snapshot with benchmark freeze enforcement
 - 3 undetected attack classes: context_smuggling, translation_attack, instruction_fragmentation
 
+## CI/CD Pipeline (Session #9)
+
+- GitHub Actions workflow: `.github/workflows/ci.yml`
+- 3 parallel jobs: Tests (Node 18), Tests (Node 22), Extension sync check
+- Branch protection on main: all 3 checks required, strict mode (PRs must be up-to-date)
+- Extension sync check uses `git diff -I "^// Generated:"` to ignore timestamp-only diffs
+- No env vars needed — API falls back to in-memory demo keys
+
 ## What's Not Working / Incomplete
 
 - No automated tests for the extension (only API and core have tests)
-- No CI/CD pipeline
 - No monitoring or alerting for the API
 - In-memory rate limiting resets on server restart
 - No user feedback mechanism for false positives/negatives

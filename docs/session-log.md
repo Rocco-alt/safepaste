@@ -39,3 +39,8 @@
 - **Built:** v0.3.0 — Fixed 5 benchmark FNs (expanded 4 patterns, added 6 new); added 4 detected categories with 11 patterns (tool_call_injection, system_message_spoofing, roleplay_jailbreak, multi_turn_injection); 19→36 patterns, 9→13 detected categories; benchmark P=1.0 R=1.0 (was R=0.545); 203 tests (166 core + 37 API); v0.3.0 dataset snapshot
 - **Decided:** 3 categories stay undetected (context_smuggling, translation_attack, instruction_fragmentation); spoof.restrictions_lifted requires declarative form to avoid FP; exfiltrate.repeat_above uses exfiltrate. prefix for no-dampening
 - **Next:** Investigate 1 FP in full eval; improve recall for roleplay_jailbreak (0.49) and multi_turn_injection (0.40); SDK Phase 2 (@safepaste/test); CI/CD pipeline
+
+## Session #9 — 2026-03-14
+- **Built:** CI/CD pipeline — GitHub Actions workflow with 3 parallel jobs (tests on Node 18+22, extension sync check); branch protection on main requiring all checks to pass; deep review validated repo state
+- **Decided:** Timestamps in generated files preserved (original design intent), sync check uses `git diff -I` to ignore them; `enforce_admins: false` so admin can still push directly; no linting/dataset eval in CI (matches design philosophy)
+- **Next:** Investigate 1 FP in full eval; improve recall for roleplay_jailbreak (0.49) and multi_turn_injection (0.40); SDK Phase 2 (@safepaste/test)
