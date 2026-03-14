@@ -29,3 +29,8 @@
 - **Built:** SDK Phase 1 — renamed packages/shared/ to packages/core/, created @safepaste/core v0.1.0 npm package with scanPrompt() SDK interface, 92 standalone unit tests, JSDoc on all exports, SDK README; refactored API detector.js + 3 dataset scripts to use scanPrompt(); ADR-007; updated all docs
 - **Decided:** CJS-only (no ESM dual-publish); v0.1.0 pre-release version; scanPrompt() in core eliminates 3 duplicated orchestration functions; categories grouping stays in API layer; all meta fields are stable public API surface; seed-mutation partition co-location is intentional non-guarantee (document for future ML work)
 - **Next:** CI/CD pipeline (high priority, 129 tests ready to automate); or Phase 2 SafePaste Test CLI (unblocked by Phase 1); npm publish when ready
+
+## Session #7 — 2026-03-14
+- **Built:** Deep review + evaluation bug fixes (recall > 1.0, version double-counting) + curated corpus expansion (42 new seeds, 69→111 curated, 316→535 total); benchmark now covers all 17 categories (was 3); partition dead-zone analysis (n=6,7 yield 0 benchmark due to ceil() rounding)
+- **Decided:** Corpus expansion before pattern development (avoid self-confirming benchmarks); context_smuggling stays `detected: false` (resists regex); seeds must be distinct attack mechanisms not paraphrases; evaluation must be trustworthy before scaling corpus
+- **Next:** Diagnostic review of 5 benchmark FNs in detected categories (instruction_chaining, jailbreak_bypass, role_hijacking, secrecy_manipulation, system_prompt_extraction) — analyze why scores fall below threshold, then propose pattern/weight adjustments

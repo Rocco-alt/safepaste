@@ -54,11 +54,16 @@ function appendJsonl(filePath, record) {
 
 /**
  * Recursively walk a directory and return all .jsonl file paths.
+ * By default, skips 'versions' directories to avoid counting
+ * versioned snapshots alongside live data.
  *
  * @param {string} dir - Directory to walk
+ * @param {object} [options] - Walk options
+ * @param {string[]} [options.exclude=['versions']] - Directory names to skip
  * @returns {string[]} Array of absolute paths to .jsonl files
  */
-function walkJsonlFiles(dir) {
+function walkJsonlFiles(dir, options = {}) {
+  const exclude = options.exclude || ['versions'];
   const results = [];
   if (!fs.existsSync(dir)) return results;
 
@@ -66,7 +71,9 @@ function walkJsonlFiles(dir) {
   for (const entry of entries) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      results.push(...walkJsonlFiles(full));
+      if (!exclude.includes(entry.name)) {
+        results.push(...walkJsonlFiles(full, options));
+      }
     } else if (entry.isFile() && entry.name.endsWith('.jsonl')) {
       results.push(full);
     }

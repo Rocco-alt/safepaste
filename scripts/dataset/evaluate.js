@@ -116,11 +116,12 @@ function main() {
     // Track per-category coverage
     const cat = record.category || 'unknown';
     if (!coverageByCategory[cat]) {
-      coverageByCategory[cat] = { total: 0, detected: 0, expected_detected: 0 };
+      coverageByCategory[cat] = { total: 0, detected: 0, expected_detected: 0, tp: 0 };
     }
     coverageByCategory[cat].total++;
     if (result.flagged) coverageByCategory[cat].detected++;
     if (record.expected_flagged) coverageByCategory[cat].expected_detected++;
+    if (record.expected_flagged && result.flagged) coverageByCategory[cat].tp++;
 
     // Check if this category is currently detected by the engine
     const categoryDetected = isDetected(cat);
@@ -189,7 +190,7 @@ function main() {
   for (const [cat, data] of Object.entries(coverageByCategory)) {
     const catInfo = { total: data.total, detected: data.detected };
     if (data.expected_detected > 0) {
-      catInfo.recall = data.detected / data.expected_detected;
+      catInfo.recall = data.tp / data.expected_detected;
     } else {
       catInfo.recall = null;
     }

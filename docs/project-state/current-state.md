@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0
-**Last updated:** Session #6 (2026-03-14)
+**Last updated:** Session #7 (2026-03-14)
 
 ## What's Live
 
@@ -44,18 +44,21 @@
 - encoding.obfuscated weight: 35 (was 22) — standalone encoding references now flag
 - Newline evasion fixed: `system\nprompt`, `developer\nmode`, etc. now detect correctly
 
-## Dataset Pipeline
+## Dataset Pipeline (Session #7 expansion)
 
-- 69 curated prompt-injection examples across 17 attack categories + 10 benign
+- 111 curated prompt-injection examples across 17 attack categories + 10 benign
 - 17 RAG-injection examples across 7 categories
-- 247 generated mutation variants (7 strategies: synonym, punctuation, whitespace, encoding, context_embedding, fragmentation, multilingual)
-- 316 total records partitioned: 237 training / 74 validation / 5 benchmark
+- 424 generated mutation variants (7 strategies)
+- 535 total records partitioned: 392 training / 124 validation / 19 benchmark
+- All 17 categories represented in benchmark (was 3 categories with 5 records)
+- Benchmark P=1.0 (0 FP), R=0.545 (5 FN in detected categories, 5 not-currently-detected)
 - Pipeline scripts: validate.js, evaluate.js, diagnose.js, stats.js, view.js, mutate.js, merge.js, version.js
 - Shared library: schema.js, safety.js, io.js, categories.js, dedup.js, partition.js, mutations.js
-- v0.2.0 evaluation: Benchmark P=1.0 R=1.0 | Validation P=1.0 R=1.0 | Training P=1.0 R=1.0 (6 mutation divergence, 0 genuine FP)
+- evaluate.js fixed: per-category recall now uses TP (was using all-flagged, causing recall > 1.0)
+- walkJsonlFiles fixed: excludes versions/ directory by default (was double-counting snapshots)
 - Evaluator distinguishes mutation_label_divergence from genuine false positives
 - Version v0.2.0 snapshot with benchmark freeze enforcement (v0.1.0 pinned)
-- 19/19 patterns triggered; 7 undetected attack classes identified as detection gaps
+- 7 undetected attack classes identified as detection gaps
 
 ## What's Not Working / Incomplete
 
@@ -66,5 +69,5 @@
 - No user feedback mechanism for false positives/negatives
 - Dataset ingestion adapters not yet implemented (Phase 3)
 - 7 undetected attack classes (context_smuggling, tool_call_injection, system_message_spoofing, roleplay_jailbreak, translation_attack, multi_turn_injection, instruction_fragmentation)
-- Benchmark has only 5 records — needs growth before v0.3.0
+- Benchmark has 19 records across all 17 categories but 5 FNs in detected categories need investigation
 - @safepaste/core not yet published to npm

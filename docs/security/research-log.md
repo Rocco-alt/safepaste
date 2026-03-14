@@ -27,3 +27,13 @@ This is a chronological, append-only log of security discoveries made during Saf
 **Classification:** New attack technique (undetected)
 **Observation:** Indirect prompt injection via tool use is a growing threat in AI agent systems. When an agent uses tools (web search, code execution, document retrieval), the tool responses can contain injection payloads that the agent processes as trusted context. This attack vector is fundamentally different from direct clipboard-based injection because the user never sees the malicious text.
 **Action:** Deferred. Documented in attack taxonomy "NOT YET DETECTED" section. Addressing this is part of SDK roadmap Phase 3 (SafePaste Guard — agent runtime security).
+
+### 2026-03-14 — Session #7
+**Classification:** Evaluation methodology insight
+**Observation:** The partition algorithm (`partition.js`) has dead zones at curated sizes n=6 and n=7 where `ceil(n*0.6) + ceil(n*0.2) = n`, leaving zero records for benchmark. This caused 9 of 17 categories to have no benchmark representation despite having 3-7 curated examples. Safe curated targets are n=5 (1 benchmark) or n=8+ (1+ benchmark). The double-ceil rounding is inherent to the 60/20/20 split.
+**Action:** Expanded curated corpus to avoid dead zones (all categories now at n=5 or n=8). Documented for future corpus growth planning.
+
+### 2026-03-14 — Session #7
+**Classification:** Detection gap analysis
+**Observation:** context_smuggling (hiding instructions in legitimate business documents like meeting agendas, customer feedback, FAQ pages) fundamentally resists regex-based detection. Any regex that catches these would false-positive on real business text. This category serves as a natural benchmark for future ML-based detection and should remain `detected: false` in the regex engine.
+**Action:** Documented as inherent regex limitation. Category stays `detected: false`. Added diverse curated examples (8 total) for future ML training/evaluation.
