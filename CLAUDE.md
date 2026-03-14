@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SafePaste is a prompt-injection detection tool with two delivery mechanisms: a Chrome extension (client-side, fully local) and a REST API (server-side). It's a monorepo with four packages under `packages/`.
+SafePaste is a prompt-injection detection tool with two delivery mechanisms: a Chrome extension (client-side, fully local) and a REST API (server-side). It's a monorepo with five packages under `packages/`.
 
 ## Commands
 
 ```bash
 npm install              # Install root + all packages (postinstall runs install in each package)
 npm start                # Start API server (packages/api/server.js) on PORT (default 3000)
-npm test                 # Run API integration tests (starts server, runs ~20 tests, exits)
+npm test                 # Run all tests: core (166) + test (88) + API (37)
 npm run build:extension  # Sync shared detection logic into extension package
 npm run migrate          # Initialize PostgreSQL schema (packages/api/db.js)
 ```
@@ -22,7 +22,8 @@ Website runs separately: `node packages/website/server.js` (port 3001).
 
 ### Monorepo Layout
 
-- **packages/core/** — Single source of truth for detection logic (`detect.js`, `patterns.js`). 19 regex patterns with weighted scoring and dampening for benign contexts.
+- **packages/core/** — Single source of truth for detection logic (`detect.js`, `patterns.js`). 36 regex patterns with weighted scoring and dampening for benign contexts.
+- **packages/test/** — Attack simulation CLI (`@safepaste/test`). Generates adversarial variants by injecting 26 payloads across 13 attack categories into a target prompt, scans with `@safepaste/core`, reports detection results. Uses `@safepaste/core` as peer dependency (black-box treatment). Three output formats (report, JSON, JSONL), CI/CD exit codes.
 - **packages/extension/** — Chrome Manifest v3 extension. Content scripts intercept paste events on 8 AI chat sites (ChatGPT, Claude, Gemini, Copilot, Groq, Grok), analyze text locally, and show warning modals. Uses MutationObserver for shadow DOM support and post-paste fallback for sites where clipboard access fails.
 - **packages/api/** — Express REST API. Endpoints: `/v1/scan`, `/v1/scan/batch`, `/v1/patterns`, `/v1/usage`, key management, Stripe billing. Auth via Bearer tokens with `sp_` prefix (user) or `sk_admin_` prefix (admin). Per-key sliding-window rate limiting in memory.
 - **packages/website/** — Static Express server for landing page and API docs.

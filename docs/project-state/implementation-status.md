@@ -30,6 +30,21 @@
 | Ingestion adapters | Not started | Phase 3 — HuggingFace, GitHub, CSV, JSONL |
 | Telemetry collection | Not started | Phase 4 — PII stripping, sanitization |
 
+## Attack Simulation CLI (@safepaste/test)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| CLI tool (safepaste-test) | Done | Positional prompt, --file, stdin input |
+| Programmatic API (run()) | Done | Exported from index.js for library use |
+| Payload generation | Done | 26 independent payloads across 13 categories |
+| Injection strategies | Done | Prepend, append, wrap (3 per payload = 78 variants) |
+| Output formats | Done | Report (human), JSON, JSONL |
+| CI/CD integration | Done | Exit code 0 (pass) / 1 (fail) / 2 (usage error) |
+| Strict mode | Done | --strict flag (threshold 25) |
+| Category filtering | Done | --categories flag |
+| Pass threshold | Done | --pass-threshold flag (default 0.8) |
+| Unit tests | Done | 88 tests in packages/test/test.js |
+
 ## Extension
 
 | Feature | Status | Notes |
@@ -75,7 +90,7 @@
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| CI/CD pipeline | Not started | Manual testing and deployment |
+| CI/CD pipeline | Done | GitHub Actions: 3 parallel jobs (Node 18, 22, extension sync) |
 | Monitoring/alerting | Not started | No visibility into production |
 | Staging environment | Not started | Changes go directly to production |
 | Redis rate limiting | Not started | In-memory only, resets on restart |

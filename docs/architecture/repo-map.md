@@ -5,6 +5,7 @@
 | Package | Purpose | Entry Point | Key Files |
 |---------|---------|-------------|-----------|
 | packages/core/ | Detection engine (source of truth) | detect.js | detect.js, patterns.js |
+| packages/test/ | Attack simulation CLI | cli.js | cli.js, index.js, payloads.js, inject.js, format.js |
 | packages/api/ | REST API server | server.js | server.js, auth.js, detector.js, db.js, billing.js, key-manager.js |
 | packages/extension/ | Chrome Manifest v3 extension | content.js | content.js, detector.js, background.js, popup.js, settings.js, ui.css |
 | packages/website/ | Landing page + docs | server.js | server.js, index.html, docs.html |
@@ -20,7 +21,8 @@
 - **API server:** `npm start` → packages/api/server.js (port 3000)
 - **Website:** `node packages/website/server.js` (port 3001)
 - **Extension:** loaded by Chrome from packages/extension/manifest.json
-- **Tests:** `npm test` → packages/api/test.js
+- **Attack simulation CLI:** `node packages/test/cli.js <prompt>` or `npx safepaste-test`
+- **Tests:** `npm test` → core/test.js + test/test.js + api/test.js
 - **Build:** `npm run build:extension` → scripts/build-extension.js
 
 ## Database Schema (packages/api/db.js)
@@ -38,4 +40,4 @@
 
 ## Key File Count
 
-~3,800 lines of vanilla JavaScript across 4 packages.
+~4,600 lines of vanilla JavaScript across 5 packages.

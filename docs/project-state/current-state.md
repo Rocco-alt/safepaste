@@ -1,7 +1,7 @@
 # Current State
 
-**Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core)
-**Last updated:** Session #10 (2026-03-14)
+**Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core), 0.1.0 (@safepaste/test)
+**Last updated:** Session #11 (2026-03-14)
 
 ## What's Live
 
@@ -10,6 +10,7 @@
 - Landing page + API docs website
 - Stripe billing for Pro tier
 - @safepaste/core v0.3.0 SDK (ready to publish)
+- @safepaste/test v0.1.0 CLI (attack simulation, 26 payloads, 13 categories, 88 tests)
 
 ## What's Working
 
@@ -34,7 +35,7 @@
 - 166 standalone unit tests, JSDoc on all exports
 - API detector.js refactored to thin wrapper over scanPrompt()
 - Dataset scripts refactored to use scanPrompt()
-- 203 total tests (166 core + 37 API), all passing
+- 291 total tests (166 core + 88 test + 37 API), all passing
 
 ## Detection Engine (Session #8 expansion)
 

@@ -80,7 +80,7 @@ SafePaste/CLAUDE.md
 **How Claude uses it:** This is auto-loaded at the start of every conversation (same as MEMORY.md, but this one is in the repo). It tells Claude:
 - What the project is
 - How to run commands (`npm test`, `npm start`, etc.)
-- The architecture (4 packages, how shared code sync works)
+- The architecture (5 packages, how shared code sync works)
 - Where documentation lives
 - Session management rules
 

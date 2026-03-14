@@ -1,0 +1,36 @@
+{
+  "name": "@safepaste/test",
+  "version": "0.1.0",
+  "description": "Attack simulation CLI for testing prompt injection detection.",
+  "main": "index.js",
+  "bin": {
+    "safepaste-test": "./cli.js"
+  },
+  "files": [
+    "cli.js",
+    "index.js",
+    "payloads.js",
+    "inject.js",
+    "format.js",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@safepaste/core": ">=0.3.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/safepaste",
+    "directory": "packages/test"
+  },
+  "keywords": [
+    "prompt-injection",
+    "security",
+    "ai-safety",
+    "testing",
+    "cli"
+  ]
+}

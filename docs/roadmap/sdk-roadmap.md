@@ -40,7 +40,7 @@ SafePaste is evolving from a detection tool into developer-first AI security inf
 
 **Scope:** Medium. Requires designing the CLI interface, test generation logic, and output formatting.
 
-**Status:** Not started. The attack taxonomy and dataset structure are in place as foundations.
+**Status:** **Complete.** `@safepaste/test` v0.1.0 — CLI + programmatic API, 26 independently authored payloads across 13 detected categories, 3 injection strategies (prepend/append/wrap), 3 output formats (report/json/jsonl), 88 tests, CI/CD exit codes.
 
 ---
 
@@ -90,6 +90,6 @@ SafePaste is evolving from a detection tool into developer-first AI security inf
 | Phase | Product | Scope | Status | Key Dependency |
 |-------|---------|-------|--------|----------------|
 | 1 | SafePaste Core (SDK) | Small-medium | Foundation exists | None |
-| 2 | SafePaste Test (CLI) | Medium | Not started | Phase 1 + dataset |
+| 2 | SafePaste Test (CLI) | Medium | **Complete** | Phase 1 + dataset |
 | 3 | SafePaste Guard (Agent) | Large | Not started | Phase 1 + new patterns |
 | 4 | SafePaste Cloud (Platform) | Large | Not started | Phases 1-3 |
