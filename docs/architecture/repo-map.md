@@ -38,4 +38,4 @@
 
 ## Key File Count
 
-~2,800 lines of vanilla JavaScript across 4 packages.
+~3,800 lines of vanilla JavaScript across 4 packages.

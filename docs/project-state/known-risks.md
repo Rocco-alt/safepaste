@@ -20,7 +20,6 @@
 ## Operational Risks
 
 - **Solo developer:** No code review, single point of failure for knowledge and decision-making.
-- **No CI/CD pipeline:** Manual testing and deployment increases the chance of shipping broken code.
 - **No staging environment:** Changes go directly to production with no intermediate validation.
 - **No backup strategy documented:** PostgreSQL data (API keys, customers) has no documented backup/restore process.
 - **Chrome Web Store dependency:** Extension updates require Chrome Web Store review, which can take days and may be rejected.

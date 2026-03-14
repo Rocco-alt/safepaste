@@ -1,8 +1,8 @@
 # @safepaste/core
 
-Prompt injection detection for AI applications.
+Deterministic prompt injection detection for LLM applications.
 
-Lightweight regex-based detection engine with weighted scoring, benign-context dampening, and zero dependencies. Works in Node.js (>=14) and modern browsers.
+Prompt injection is the #1 vulnerability in LLM applications — attackers embed hidden instructions in user input to hijack AI behavior. SafePaste detects these attacks using 36 regex patterns with weighted scoring, benign-context dampening, and zero dependencies. Everything runs in-process: no API keys, no network calls, no data leaves your application.
 
 ## Install
 
@@ -22,6 +22,43 @@ console.log(result.risk);     // "high"
 console.log(result.score);    // 75
 console.log(result.matches);  // [{ id: "override.ignore_previous", ... }, ...]
 ```
+
+## What It Detects
+
+36 patterns across 13 attack categories:
+
+| Category | Patterns | Weight Range |
+|----------|----------|-------------|
+| Instruction Override | 6 | 25-35 |
+| Role Hijacking | 4 | 22-32 |
+| System Prompt Extraction | 1 | 40 |
+| Data Exfiltration | 4 | 35-40 |
+| Secrecy Manipulation | 4 | 18-22 |
+| Jailbreak Bypass | 2 | 28-35 |
+| Encoding Obfuscation | 1 | 35 |
+| Instruction Chaining | 2 | 15-18 |
+| Meta Prompt Attacks | 1 | 18 |
+| Tool Call Injection | 3 | 30-35 |
+| System Message Spoofing | 3 | 28-35 |
+| Roleplay Jailbreak | 3 | 25-35 |
+| Multi-Turn Injection | 2 | 22-25 |
+
+## Use Cases
+
+- LLM gateway / API middleware
+- AI chat applications
+- Developer tools and IDE extensions
+- Prompt moderation pipelines
+- Security testing and red-teaming
+
+## How It Works
+
+1. **Normalize** — NFKC Unicode normalization, zero-width character removal, whitespace collapse, lowercase
+2. **Match** — Test 36 regex patterns against normalized text
+3. **Score** — Sum matched pattern weights (capped at 100)
+4. **Context** — Check if text is educational/meta ("for example", "prompt injection research")
+5. **Dampen** — Reduce score 15% for benign contexts (never for exfiltration patterns)
+6. **Classify** — Map score to risk level: high (>=60), medium (>=30), low (<30)
 
 ## API Reference
 
@@ -79,16 +116,14 @@ For custom detection pipelines:
 
 ### `PATTERNS`
 
-Array of 19 built-in detection patterns. Each pattern has `{id, weight, category, match, explanation}`.
+Array of 36 built-in detection patterns. Each pattern has `{id, weight, category, match, explanation}`.
 
-## How It Works
+## Threat Model
 
-1. **Normalize** — NFKC Unicode normalization, zero-width character removal, whitespace collapse, lowercase
-2. **Match** — Test 19 regex patterns against normalized text
-3. **Score** — Sum matched pattern weights (capped at 100)
-4. **Context** — Check if text is educational/meta ("for example", "prompt injection research")
-5. **Dampen** — Reduce score 15% for benign contexts (never for exfiltration patterns)
-6. **Classify** — Map score to risk level: high (>=60), medium (>=30), low (<30)
+- **What it catches:** Known syntactic patterns — instruction override, role hijacking, system prompt extraction, data exfiltration, jailbreaks, tool call injection, and more.
+- **What it doesn't catch:** Semantic/reasoning attacks, novel zero-day patterns, image-based injection, highly obfuscated or language-translated attacks.
+- **Design choice:** Transparency over black-box — every detection includes matched patterns, scores, and explanations. No opaque ML model.
+- **Not a standalone defense:** Complementary layer for defense-in-depth. Combine with model-level safety, output filtering, and privilege separation.
 
 ## Examples
 
@@ -132,20 +167,6 @@ if (score > 50) {
   console.log('High-confidence detection:', matches.map(m => m.id));
 }
 ```
-
-## Detection Categories
-
-| Category | Patterns | Weight Range |
-|----------|----------|-------------|
-| Instruction Override | 6 | 25-35 |
-| Role Hijacking | 2 | 30-32 |
-| System Prompt | 1 | 40 |
-| Exfiltration | 3 | 35-40 |
-| Secrecy | 2 | 18-22 |
-| Jailbreak | 2 | 28-35 |
-| Obfuscation | 1 | 35 |
-| Instruction Chaining | 1 | 15 |
-| Meta | 1 | 18 |
 
 ## License
 

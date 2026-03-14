@@ -74,4 +74,4 @@
 - No user feedback mechanism for false positives/negatives
 - Dataset ingestion adapters not yet implemented (Phase 3)
 - 3 undetected attack classes (context_smuggling, translation_attack, instruction_fragmentation)
-- @safepaste/core not yet published to npm
+- @safepaste/core v0.3.0 published to npm (session #11)

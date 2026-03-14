@@ -5,10 +5,10 @@
 - **Includes:** Unit tests for detector.js, content.js paste interception logic, and settings persistence
 - **Blocked by:** Need to choose a browser testing approach (Jest + jsdom, Puppeteer, or Chrome Extension Testing framework)
 
-## Milestone 2: CI/CD Pipeline
+## Milestone 2: CI/CD Pipeline [COMPLETED]
 - **Goal:** Automate testing and deployment so that every commit is validated and broken code can't ship
-- **Includes:** GitHub Actions workflow for running `npm test`, extension tests, and linting on every push/PR
-- **Blocked by:** Extension test coverage (Milestone 1) — CI is less valuable without extension tests
+- **Includes:** GitHub Actions workflow running core unit tests, API integration tests, and extension sync check on every push/PR
+- **Status:** Completed (session #9). 3 jobs: Tests Node 18, Tests Node 22, Extension sync check.
 
 ## Milestone 3: Detection Quality Improvement
 - **Goal:** Reduce false negatives by expanding pattern coverage for under-detected attack categories

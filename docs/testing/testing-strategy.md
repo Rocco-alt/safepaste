@@ -4,8 +4,8 @@
 
 - **API:** 37 integration tests in `packages/api/test.js`. Run via `npm test`. Tests cover all endpoints, auth, rate limiting, detection responses, batch scanning, input validation, and performance (<10ms latency).
 - **Extension:** Zero automated tests. All validation is manual.
-- **Detection engine:** Tested indirectly through API tests. No standalone unit tests for `packages/core/detect.js` or `packages/core/patterns.js`.
-- **CI/CD:** None. Tests are run manually before commits.
+- **Detection engine:** 166 standalone unit tests in `packages/core/test.js`. Run via `node packages/core/test.js`.
+- **CI/CD:** GitHub Actions (3 jobs: Tests Node 18, Tests Node 22, Extension sync check). Runs on push and PR to main.
 
 ## API Testing
 

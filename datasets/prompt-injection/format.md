@@ -94,13 +94,14 @@ Records with `source: "scraped"` **must** include a `metadata` object:
 - `instruction_chaining` — step-by-step instruction structures
 - `meta_prompt_attacks` — references to prompt injection itself
 
-**Not yet detected (detection gaps):**
-- `context_smuggling` — hiding instructions in seemingly benign context
 - `tool_call_injection` — injecting fake tool/function calls
 - `system_message_spoofing` — faking system-level messages or delimiters
 - `roleplay_jailbreak` — using roleplay framing to bypass safety
-- `translation_attack` — hiding attacks inside translation requests
 - `multi_turn_injection` — attacks split across multiple conversation turns
+
+**Not yet detected (detection gaps):**
+- `context_smuggling` — hiding instructions in seemingly benign context
+- `translation_attack` — hiding attacks inside translation requests
 - `instruction_fragmentation` — splitting instructions across sentences/paragraphs
 
 **Special:**

@@ -4,7 +4,6 @@
 
 - **ML-based detection** — Add a machine learning classifier as a second opinion alongside regex. Would catch semantic attacks that regex misses. Blocked by: need training data and evaluation methodology.
 - **Extension automated testing** — Currently only the API has tests. The extension has zero automated tests, which is a significant risk for a security tool.
-- **CI/CD pipeline** — No automated testing or deployment. Changes go directly to production with manual testing only.
 
 ## Medium Priority
 
@@ -23,4 +22,4 @@
 
 ## Completed
 
-(Items move here when done, with completion date)
+- **CI/CD pipeline** (session #9) — GitHub Actions with 3 jobs (Tests Node 18+22, Extension sync check) on every push/PR

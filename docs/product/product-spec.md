@@ -26,7 +26,7 @@ An Express-based API that accepts text and returns structured detection results 
 
 ### For End Users (Extension)
 - Paste interception on 8 AI chat platforms
-- Real-time detection with 19 regex patterns across 9 attack categories
+- Real-time detection with 36 regex patterns across 13 detected attack categories
 - Warning modals with risk visualization (red = high, yellow = medium)
 - Per-site enable/disable toggles
 - Configurable sensitivity: normal, strict, red-only, or off

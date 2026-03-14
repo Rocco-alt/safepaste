@@ -32,7 +32,7 @@ The **detection engine** (`packages/core/`) and the **attack taxonomy** (`docs/s
 ## Triggers for Open-Sourcing
 
 Open-source when these conditions are met:
-1. SDK is publishable (roadmap Phase 1 complete — `package.json`, exports, tests, JSDoc)
+1. ~~SDK is publishable~~ **Met:** @safepaste/core v0.3.0 published to npm (session #11)
 2. Dataset is large enough to be useful (50+ labeled examples across all categories)
 3. Contributing documentation is ready (`docs/community/contributing.md`)
 4. The project has enough momentum that community contributions are likely

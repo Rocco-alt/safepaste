@@ -19,14 +19,23 @@
     "detection",
     "safepaste",
     "jailbreak",
-    "ai-safety"
+    "ai-safety",
+    "prompt-security",
+    "prompt-defense",
+    "llm-middleware",
+    "ai-prompt-injection",
+    "llm-security"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anthropics/safepaste",
+    "url": "git+https://github.com/Rocco-alt/safepaste.git",
     "directory": "packages/core"
   },
+  "bugs": {
+    "url": "https://github.com/Rocco-alt/safepaste/issues"
+  },
+  "homepage": "https://github.com/Rocco-alt/safepaste/tree/main/packages/core#readme",
   "engines": {
     "node": ">=14.0.0"
   }
