@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core)
-**Last updated:** Session #8 (2026-03-14)
+**Last updated:** Session #10 (2026-03-14)
 
 ## What's Live
 
@@ -45,7 +45,7 @@
 - Dampening factor: 0.85 — attacks scoring 42+ survive dampening
 - Exfiltration patterns (including repeat_above) never dampened
 - Benchmark: P=1.0, R=1.0 (was P=1.0, R=0.545)
-- Full eval: P=0.999, R=0.838, 1 FP (benign context edge case)
+- Full eval: P=1.0, R=0.838, 0 FP (corrected in session #10 — prior "1 FP" was double-counting artifact)
 
 ## Dataset Pipeline (Session #8 versioning)
 

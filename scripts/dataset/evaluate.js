@@ -62,10 +62,26 @@ function main() {
   }
 
   // Collect records
+  // When given a directory, read only from partition subdirectories
+  // (training/, validation/, benchmark/) to avoid double-counting records
+  // that also exist in source directories (curated/, generated/).
   const inputPath = path.resolve(paths[0]);
   let files;
   if (fs.statSync(inputPath).isDirectory()) {
-    files = walkJsonlFiles(inputPath);
+    const partitionDirs = ['training', 'validation', 'benchmark'];
+    const existingPartitions = partitionDirs
+      .map(d => path.join(inputPath, d))
+      .filter(d => fs.existsSync(d));
+
+    if (existingPartitions.length > 0) {
+      files = [];
+      for (const dir of existingPartitions) {
+        files.push(...walkJsonlFiles(dir));
+      }
+    } else {
+      // Fallback: no partition dirs, walk the whole directory
+      files = walkJsonlFiles(inputPath);
+    }
   } else {
     files = [inputPath];
   }

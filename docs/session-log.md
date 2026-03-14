@@ -44,3 +44,8 @@
 - **Built:** CI/CD pipeline — GitHub Actions workflow with 3 parallel jobs (tests on Node 18+22, extension sync check); branch protection on main requiring all checks to pass; deep review validated repo state
 - **Decided:** Timestamps in generated files preserved (original design intent), sync check uses `git diff -I` to ignore them; `enforce_admins: false` so admin can still push directly; no linting/dataset eval in CI (matches design philosophy)
 - **Next:** Investigate 1 FP in full eval; improve recall for roleplay_jailbreak (0.49) and multi_turn_injection (0.40); SDK Phase 2 (@safepaste/test)
+
+## Session #10 — 2026-03-14
+- **Built:** Deep review (full repo-grounded context reconstruction); fixed evaluate.js double-counting bug — was reading both source dirs (curated/generated) and partition dirs (training/validation/benchmark), inflating record count 2x (1075→535); corrected metrics: P=1.0 R=0.838 0 FP (not P=0.999 1 FP)
+- **Decided:** Evaluate from partition dirs only when dataset root has both source and partition dirs; the "1 FP" from sessions #8-9 was a phantom caused by examples/ records lacking expected_flagged; no FP investigation needed
+- **Next:** Improve recall for system_message_spoofing (0.71), roleplay_jailbreak (0.49), multi_turn_injection (0.40); SDK Phase 2 (@safepaste/test); npm publish @safepaste/core v0.3.0
