@@ -30,7 +30,7 @@ Use regex-based pattern matching. Each detection pattern is a regular expression
 
 ## Affected Files
 
-- packages/shared/patterns.js (pattern definitions)
-- packages/shared/detect.js (matching engine)
+- packages/core/patterns.js (pattern definitions)
+- packages/core/detect.js (matching engine)
 - packages/api/detector.js (API wrapper)
 - packages/extension/detector.js (extension wrapper)

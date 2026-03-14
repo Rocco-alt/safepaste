@@ -4,23 +4,23 @@ SafePaste is evolving from a detection tool into developer-first AI security inf
 
 ## Phase 1: SafePaste Core — Prompt Injection Detection SDK
 
-**Description:** Publish the detection engine (`packages/shared/`) as a standalone npm package (`@safepaste/core`) that any JavaScript application can import. This is the foundation for all future phases.
+**Description:** Publish the detection engine (`packages/core/`) as a standalone npm package (`@safepaste/core`) that any JavaScript application can import. This is the foundation for all future phases.
 
 **Key Deliverables:**
 - Add `package.json` with proper name, version, exports, and metadata
 - Add JSDoc documentation to all 8 exported functions
 - Add standalone unit tests (independent of the API test suite)
-- Rename `packages/shared/` to `packages/core/` (see ADR-006 for why this is deferred to this phase)
+- Rename `packages/core/` to `packages/core/` (see ADR-006 for why this is deferred to this phase)
 - Update build script and API imports for new path
 - Publish to npm as `@safepaste/core`
 - Create a simple SDK interface: `scanPrompt(text, options)` → `{ flagged, risk, score, matches }`
 - Write SDK README with quickstart, API reference, and examples
 
-**Dependencies:** None — the foundation already exists in `packages/shared/detect.js` and `packages/shared/patterns.js`
+**Dependencies:** None — the foundation already exists in `packages/core/detect.js` and `packages/core/patterns.js`
 
 **Scope:** Small-medium. The code exists; the work is packaging, documentation, and publishing.
 
-**Status:** Foundation exists. detect.js exports 8 pure functions with no dependencies. patterns.js defines 19 patterns. Both work in Node.js and browser environments.
+**Status:** **Complete.** Published as @safepaste/core v0.1.0. scanPrompt() SDK interface, 92 unit tests, JSDoc documentation.
 
 ---
 

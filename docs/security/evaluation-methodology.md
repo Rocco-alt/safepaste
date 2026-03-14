@@ -22,7 +22,7 @@
 
 ## Evaluation Process for New Patterns
 
-Before adding a pattern to `packages/shared/patterns.js`:
+Before adding a pattern to `packages/core/patterns.js`:
 
 1. Write 5+ test cases of text the pattern SHOULD match
 2. Write 5+ test cases of text the pattern should NOT match

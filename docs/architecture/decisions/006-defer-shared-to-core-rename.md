@@ -1,17 +1,18 @@
 # ADR-006: Defer shared-to-core Rename Until SDK Phase
 
 **Date:** 2026-03-12
-**Status:** accepted
+**Status:** superseded
+**Superseded by:** ADR-007 (SDK Phase 1 — @safepaste/core)
 
 ## Context
 
-SafePaste's detection engine lives in `packages/shared/` — two plain JavaScript files (`detect.js` and `patterns.js`) with no `package.json`. As SafePaste evolves toward becoming developer-first AI security infrastructure, the question arose whether `packages/shared/` should be renamed to `packages/core/` (as `safepaste-core`) to better reflect its role as a reusable SDK.
+SafePaste's detection engine lives in `packages/core/` — two plain JavaScript files (`detect.js` and `patterns.js`) with no `package.json`. As SafePaste evolves toward becoming developer-first AI security infrastructure, the question arose whether `packages/core/` should be renamed to `packages/core/` (as `safepaste-core`) to better reflect its role as a reusable SDK.
 
 The rename would affect 14 files: 3 code files with `require("../shared/...")` paths, 2 generated files with path comments, the build script's hardcoded `SHARED` constant, and 9 documentation files.
 
 ## Decision
 
-Keep the directory as `packages/shared/`. Defer the rename to `packages/core/` until the SDK roadmap Phase 1 is implemented — when the directory gains a `package.json`, proper exports, JSDoc documentation, standalone tests, and is published to npm as `@safepaste/core`.
+Keep the directory as `packages/core/`. Defer the rename to `packages/core/` until the SDK roadmap Phase 1 is implemented — when the directory gains a `package.json`, proper exports, JSDoc documentation, standalone tests, and is published to npm as `@safepaste/core`.
 
 ## Alternatives Considered
 
@@ -29,7 +30,7 @@ Keep the directory as `packages/shared/`. Defer the rename to `packages/core/` u
 
 ## Affected Files
 
-- packages/shared/ (stays as-is)
+- packages/core/ (stays as-is)
 - docs/roadmap/sdk-roadmap.md (Phase 1 includes the eventual rename)
 
 ## Superseded By

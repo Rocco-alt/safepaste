@@ -4,7 +4,7 @@
 
 - **API:** 37 integration tests in `packages/api/test.js`. Run via `npm test`. Tests cover all endpoints, auth, rate limiting, detection responses, batch scanning, input validation, and performance (<10ms latency).
 - **Extension:** Zero automated tests. All validation is manual.
-- **Detection engine:** Tested indirectly through API tests. No standalone unit tests for `packages/shared/detect.js` or `packages/shared/patterns.js`.
+- **Detection engine:** Tested indirectly through API tests. No standalone unit tests for `packages/core/detect.js` or `packages/core/patterns.js`.
 - **CI/CD:** None. Tests are run manually before commits.
 
 ## API Testing
@@ -79,7 +79,7 @@ Cross-reference: `docs/security/evaluation-methodology.md` for detailed process,
 
 ## Regression Testing Checklist
 
-When modifying detection logic (`packages/shared/patterns.js` or `packages/shared/detect.js`):
+When modifying detection logic (`packages/core/patterns.js` or `packages/core/detect.js`):
 
 1. Run `npm test` — all API tests must pass
 2. Run `npm run build:extension` — regenerate extension files

@@ -6,7 +6,7 @@ SafePaste is a private repository. This document captures the thinking about if,
 
 ## What to Open-Source First
 
-The **detection engine** (`packages/shared/`) and the **attack taxonomy** (`docs/security/attack-taxonomy.md`) have the most community value and the least competitive risk:
+The **detection engine** (`packages/core/`) and the **attack taxonomy** (`docs/security/attack-taxonomy.md`) have the most community value and the least competitive risk:
 
 - The detection engine is two files of pure JavaScript with no dependencies
 - The attack taxonomy is a classification system — it becomes more valuable when more people contribute to it

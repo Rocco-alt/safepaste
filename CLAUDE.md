@@ -22,14 +22,14 @@ Website runs separately: `node packages/website/server.js` (port 3001).
 
 ### Monorepo Layout
 
-- **packages/shared/** — Single source of truth for detection logic (`detect.js`, `patterns.js`). 19 regex patterns with weighted scoring and dampening for benign contexts.
+- **packages/core/** — Single source of truth for detection logic (`detect.js`, `patterns.js`). 19 regex patterns with weighted scoring and dampening for benign contexts.
 - **packages/extension/** — Chrome Manifest v3 extension. Content scripts intercept paste events on 8 AI chat sites (ChatGPT, Claude, Gemini, Copilot, Groq, Grok), analyze text locally, and show warning modals. Uses MutationObserver for shadow DOM support and post-paste fallback for sites where clipboard access fails.
 - **packages/api/** — Express REST API. Endpoints: `/v1/scan`, `/v1/scan/batch`, `/v1/patterns`, `/v1/usage`, key management, Stripe billing. Auth via Bearer tokens with `sp_` prefix (user) or `sk_admin_` prefix (admin). Per-key sliding-window rate limiting in memory.
 - **packages/website/** — Static Express server for landing page and API docs.
 
 ### Shared Code Sync
 
-Detection logic flows one direction: `packages/shared/` → `packages/extension/`. The build script (`scripts/build-extension.js`) generates `detect-core.js` and `patterns.js` in the extension directory. **Do not edit these generated files directly** — edit the shared source and run `npm run build:extension`.
+Detection logic flows one direction: `packages/core/` → `packages/extension/`. The build script (`scripts/build-extension.js`) generates `detect-core.js` and `patterns.js` in the extension directory. **Do not edit these generated files directly** — edit the shared source and run `npm run build:extension`.
 
 ### Graceful Degradation
 
@@ -43,7 +43,7 @@ See `.env.example` for the full list. Key variables: `PORT`, `DATABASE_URL`, `SA
 
 ## Adding a Detection Pattern
 
-1. Add the pattern to `packages/shared/patterns.js` (regex + weight 25-35 + category)
+1. Add the pattern to `packages/core/patterns.js` (regex + weight 25-35 + category)
 2. Run `npm run build:extension`
 3. Commit both the shared source files and the generated extension files
 

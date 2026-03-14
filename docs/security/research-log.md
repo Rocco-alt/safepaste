@@ -4,7 +4,7 @@ This is a chronological, append-only log of security discoveries made during Saf
 
 **When an entry matures into actionable work**, it gets promoted:
 - New attack technique → `docs/security/attack-taxonomy.md`
-- Detection improvement → `docs/security/detection-strategies.md` or `packages/shared/patterns.js`
+- Detection improvement → `docs/security/detection-strategies.md` or `packages/core/patterns.js`
 - Backlog item → `docs/backlog.md`
 
 **Entry format:** Date, session #, observation, classification, action.

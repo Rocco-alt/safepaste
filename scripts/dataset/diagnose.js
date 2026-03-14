@@ -11,28 +11,20 @@ const fs = require('fs');
 const { readJsonl, walkJsonlFiles } = require('./lib/io');
 const { escapeForDisplay } = require('./lib/safety');
 
-const PATTERNS = require('../../packages/shared/patterns');
-const {
-  normalizeText,
-  findMatches,
-  computeScore,
-  isBenignContext,
-  hasExfiltrationMatch,
-  applyDampening
-} = require('../../packages/shared/detect');
+const { scanPrompt, PATTERNS } = require('../../packages/core');
 
 const THRESHOLD = 35;
 
 function analyzeText(text) {
-  const input = typeof text === 'string' ? text : '';
-  const normalized = normalizeText(input);
-  const matches = findMatches(normalized, PATTERNS);
-  const rawScore = computeScore(matches);
-  const benign = isBenignContext(input);
-  const exfiltrate = hasExfiltrationMatch(matches);
-  const score = applyDampening(rawScore, benign, exfiltrate);
-  const flagged = score >= THRESHOLD;
-  return { flagged, score, rawScore, matches, dampened: benign && !exfiltrate, benignContext: benign };
+  const r = scanPrompt(text);
+  return {
+    flagged: r.flagged,
+    score: r.score,
+    rawScore: r.meta.rawScore,
+    matches: r.matches,
+    dampened: r.meta.dampened,
+    benignContext: r.meta.benignContext
+  };
 }
 
 function main() {

@@ -9,7 +9,7 @@ SafePaste has two delivery mechanisms — a Chrome extension and a REST API — 
 
 ## Decision
 
-Use a monorepo with four packages under `packages/`. The detection engine lives in `packages/shared/` as the single source of truth. The API imports it directly via `require()`. The extension gets a copy via a build script (`scripts/build-extension.js`) that wraps the shared code in IIFEs for browser use.
+Use a monorepo with four packages under `packages/`. The detection engine lives in `packages/core/` as the single source of truth. The API imports it directly via `require()`. The extension gets a copy via a build script (`scripts/build-extension.js`) that wraps the shared code in IIFEs for browser use.
 
 ## Alternatives Considered
 
@@ -26,7 +26,7 @@ Use a monorepo with four packages under `packages/`. The detection engine lives 
 
 ## Affected Files
 
-- packages/shared/detect.js, packages/shared/patterns.js (source of truth)
+- packages/core/detect.js, packages/core/patterns.js (source of truth)
 - packages/extension/detect-core.js, packages/extension/patterns.js (generated)
 - scripts/build-extension.js (build script)
 - packages/api/detector.js (imports shared/ directly)

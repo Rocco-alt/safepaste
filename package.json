@@ -4,7 +4,9 @@
   "scripts": {
     "postinstall": "npm install --prefix packages/api",
     "start": "node packages/api/server.js",
-    "test": "node packages/api/test.js",
+    "test": "node packages/core/test.js && node packages/api/test.js",
+    "test:core": "node packages/core/test.js",
+    "test:api": "node packages/api/test.js",
     "build:extension": "node scripts/build-extension.js",
     "migrate": "node packages/api/db.js",
     "validate:dataset": "node scripts/dataset/validate.js datasets/prompt-injection/",

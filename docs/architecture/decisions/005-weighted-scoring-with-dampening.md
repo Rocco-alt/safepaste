@@ -29,5 +29,5 @@ Each pattern has a weight (15-40). Matched weights are summed and capped at 100.
 
 ## Affected Files
 
-- packages/shared/patterns.js (weight values on each pattern)
-- packages/shared/detect.js (computeScore, isBenignContext, applyDampening functions)
+- packages/core/patterns.js (weight values on each pattern)
+- packages/core/detect.js (computeScore, isBenignContext, applyDampening functions)

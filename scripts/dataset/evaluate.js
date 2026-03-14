@@ -20,38 +20,22 @@ const { readJsonl, walkJsonlFiles } = require('./lib/io');
 const { isDetected, PROMPT_INJECTION_CATEGORIES } = require('./lib/categories');
 const { escapeForDisplay } = require('./lib/safety');
 
-// Import the detection engine — same pure functions used by the API
-const PATTERNS = require('../../packages/shared/patterns');
-const {
-  normalizeText,
-  findMatches,
-  computeScore,
-  isBenignContext,
-  hasExfiltrationMatch,
-  applyDampening
-} = require('../../packages/shared/detect');
+// Import the detection engine via @safepaste/core
+const { scanPrompt, PATTERNS } = require('../../packages/core');
 
 const THRESHOLD = 35;
 
 /**
- * Run detection engine on a single text (mirrors packages/api/detector.js analyze()).
+ * Run detection engine on a single text via @safepaste/core scanPrompt.
  */
 function analyzeText(text) {
-  const input = typeof text === 'string' ? text : '';
-  const normalized = normalizeText(input);
-  const matches = findMatches(normalized, PATTERNS);
-  const rawScore = computeScore(matches);
-  const benign = isBenignContext(input);
-  const exfiltrate = hasExfiltrationMatch(matches);
-  const score = applyDampening(rawScore, benign, exfiltrate);
-  const flagged = score >= THRESHOLD;
-
+  const r = scanPrompt(text);
   return {
-    flagged,
-    score,
-    rawScore,
-    matches: matches.map(m => m.id),
-    dampened: benign && !exfiltrate
+    flagged: r.flagged,
+    score: r.score,
+    rawScore: r.meta.rawScore,
+    matches: r.matches.map(m => m.id),
+    dampened: r.meta.dampened
   };
 }
 

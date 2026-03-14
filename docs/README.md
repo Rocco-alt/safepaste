@@ -58,4 +58,4 @@ Also at the repo root: `datasets/prompt-injection/` — labeled examples for tes
 - **Security docs are core IP.** They should be the most actively maintained files here.
 - **Research log is append-only.** Entries are never edited or deleted.
 - **Architecture maps are updated only when architecture changes** — not every session.
-- **No code snippets in docs.** Use file path references (e.g., `packages/shared/detect.js:47`) instead.
+- **No code snippets in docs.** Use file path references (e.g., `packages/core/detect.js:47`) instead.

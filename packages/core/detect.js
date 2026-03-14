@@ -1,9 +1,21 @@
-// detect.js — Core detection functions (single source of truth)
-//
-// Pure functions with no browser or Node-specific dependencies.
-// Both the API and extension are built from this file.
-// To change detection logic, edit HERE, then run: node scripts/build-extension.js
+/**
+ * @module @safepaste/core/detect
+ *
+ * Core detection functions for prompt injection analysis.
+ * Pure functions with no browser or Node-specific dependencies.
+ * Both the API and extension are built from this file.
+ *
+ * To change detection logic, edit HERE, then run: node scripts/build-extension.js
+ */
 
+/**
+ * Normalize text for consistent pattern matching.
+ * Applies NFKC Unicode normalization, removes zero-width characters,
+ * collapses all whitespace (including newlines), trims, and lowercases.
+ *
+ * @param {string} text - Raw input text
+ * @returns {string} Normalized lowercase text, or empty string if input is not a string
+ */
 function normalizeText(text) {
   if (typeof text !== "string") return "";
   return text
@@ -15,6 +27,14 @@ function normalizeText(text) {
     .toLowerCase();
 }
 
+/**
+ * Find all matching detection patterns in normalized text.
+ *
+ * @param {string} text - Normalized text (output of normalizeText)
+ * @param {import('./patterns').Pattern[]} patterns - Array of pattern objects to test
+ * @returns {Array<{id: string, weight: number, category: string, explanation: string, snippet: string}>}
+ *   Array of match objects for each triggered pattern. Empty array if no matches.
+ */
 function findMatches(text, patterns) {
   if (typeof text !== "string") return [];
   if (!Array.isArray(patterns)) return [];
@@ -44,6 +64,13 @@ function findMatches(text, patterns) {
   return matches;
 }
 
+/**
+ * Compute aggregate risk score from pattern matches.
+ * Sums all match weights and caps at 100.
+ *
+ * @param {Array<{weight: number}>} matches - Array of match objects from findMatches
+ * @returns {number} Risk score between 0 and 100 (inclusive)
+ */
 function computeScore(matches) {
   var list = Array.isArray(matches) ? matches : [];
   var total = 0;
@@ -53,6 +80,12 @@ function computeScore(matches) {
   return Math.min(100, total);
 }
 
+/**
+ * Convert a numeric score to a risk level label.
+ *
+ * @param {number} score - Risk score (0-100)
+ * @returns {"high" | "medium" | "low"} Risk level: >=60 high, >=30 medium, <30 low
+ */
 function riskLevel(score) {
   var n = Number(score) || 0;
   if (n >= 60) return "high";
@@ -60,6 +93,14 @@ function riskLevel(score) {
   return "low";
 }
 
+/**
+ * Detect whether text appears to be OCR output.
+ * Checks for high line-break ratios, irregular spacing, pipe/bullet characters,
+ * and mixed scripts (Latin + Cyrillic) that indicate OCR artifacts.
+ *
+ * @param {string} text - Raw input text (not normalized — spacing matters)
+ * @returns {boolean} True if text has OCR-like characteristics
+ */
 function looksLikeOCR(text) {
   if (typeof text !== "string" || !text) return false;
 
@@ -72,6 +113,15 @@ function looksLikeOCR(text) {
   return lineBreakRatio > 0.02 || weirdSpacing || manyPipesOrBullets || mixedScripts;
 }
 
+/**
+ * Detect whether text appears in an educational or benign context.
+ * Checks for educational markers, meta-references to "prompt injection",
+ * and framing patterns that indicate discussion of attacks rather than
+ * actual attacks.
+ *
+ * @param {string} text - Raw input text (not normalized — case and formatting matter)
+ * @returns {boolean} True if text appears educational/meta rather than an active attack
+ */
 function isBenignContext(text) {
   if (typeof text !== "string" || !text) return false;
 
@@ -92,6 +142,13 @@ function isBenignContext(text) {
   );
 }
 
+/**
+ * Check whether any matches are data exfiltration patterns.
+ * Exfiltration matches are never dampened, even in benign contexts.
+ *
+ * @param {Array<{id: string}>} matches - Array of match objects from findMatches
+ * @returns {boolean} True if any match ID starts with "exfiltrate."
+ */
 function hasExfiltrationMatch(matches) {
   var list = Array.isArray(matches) ? matches : [];
   for (var i = 0; i < list.length; i++) {
@@ -102,6 +159,16 @@ function hasExfiltrationMatch(matches) {
   return false;
 }
 
+/**
+ * Apply score dampening for benign/educational contexts.
+ * Reduces score by 15% (multiplier 0.85) when text appears benign,
+ * unless exfiltration patterns are present (never dampened).
+ *
+ * @param {number} score - Raw risk score (0-100)
+ * @param {boolean} benign - Whether isBenignContext returned true
+ * @param {boolean} hasExfiltrate - Whether hasExfiltrationMatch returned true
+ * @returns {number} Dampened score (0-100), or original score if not dampened
+ */
 function applyDampening(score, benign, hasExfiltrate) {
   var s = Number(score) || 0;
   if (!benign) return s;

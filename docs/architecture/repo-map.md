@@ -4,15 +4,15 @@
 
 | Package | Purpose | Entry Point | Key Files |
 |---------|---------|-------------|-----------|
-| packages/shared/ | Detection engine (source of truth) | detect.js | detect.js, patterns.js |
+| packages/core/ | Detection engine (source of truth) | detect.js | detect.js, patterns.js |
 | packages/api/ | REST API server | server.js | server.js, auth.js, detector.js, db.js, billing.js, key-manager.js |
 | packages/extension/ | Chrome Manifest v3 extension | content.js | content.js, detector.js, background.js, popup.js, settings.js, ui.css |
 | packages/website/ | Landing page + docs | server.js | server.js, index.html, docs.html |
 
 ## Generated Files (DO NOT EDIT)
 
-- `packages/extension/detect-core.js` — generated from `packages/shared/detect.js`
-- `packages/extension/patterns.js` — generated from `packages/shared/patterns.js`
+- `packages/extension/detect-core.js` — generated from `packages/core/detect.js`
+- `packages/extension/patterns.js` — generated from `packages/core/patterns.js`
 - Regenerate: `npm run build:extension`
 
 ## Entry Points

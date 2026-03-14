@@ -16,7 +16,7 @@ const { contentHash } = require('./lib/dedup');
 const { analyzeText, THRESHOLD } = require('./evaluate');
 const { findLatestVersion } = require('./merge');
 
-const PATTERNS = require('../../packages/shared/patterns');
+const { PATTERNS } = require('../../packages/core');
 
 const BASE_DIR = path.join(__dirname, '../../datasets/prompt-injection');
 const TRAINING_DIR = path.join(BASE_DIR, 'training');

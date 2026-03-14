@@ -1,8 +1,28 @@
-// patterns.js — Prompt injection detection rules (single source of truth)
-//
-// Both the API and extension are generated from this file.
-// To add/edit rules, change them HERE, then run: node scripts/build-extension.js
+/**
+ * @module @safepaste/core/patterns
+ *
+ * Prompt injection detection rules (single source of truth).
+ * Both the API and extension are generated from this file.
+ * To add/edit rules, change them HERE, then run: node scripts/build-extension.js
+ */
 
+/**
+ * @typedef {Object} Pattern
+ * @property {string} id - Unique identifier (e.g., "override.ignore_previous")
+ * @property {number} weight - Score contribution when matched (15-40)
+ * @property {string} category - Attack category (e.g., "instruction_override")
+ * @property {RegExp} match - Regex pattern to test against normalized text
+ * @property {string} explanation - Human-readable description of what this catches
+ */
+
+/**
+ * Built-in prompt injection detection patterns.
+ * 19 regex patterns organized by attack category:
+ * instruction_override, role_hijacking, system_prompt, exfiltration,
+ * secrecy, jailbreak, obfuscation, instruction_chaining, meta.
+ *
+ * @type {Pattern[]}
+ */
 const PATTERNS = [
 
   // === Instruction override ===

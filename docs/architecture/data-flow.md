@@ -37,7 +37,7 @@ POST /v1/scan with Bearer token
 ## Shared Code Sync Flow
 
 ```
-packages/shared/detect.js + patterns.js (authoritative source)
+packages/core/detect.js + patterns.js (authoritative source)
   → npm run build:extension (scripts/build-extension.js)
   → generates packages/extension/detect-core.js (IIFE wrapping, window.SafePasteCore)
   → generates packages/extension/patterns.js (IIFE wrapping, window.SAFEPASTE_PATTERNS)

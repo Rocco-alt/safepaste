@@ -14,7 +14,7 @@
 - **No automated testing for extension:** Only the API has integration tests. Extension changes are validated manually, which means regressions can ship unnoticed.
 - **In-memory rate limiting doesn't scale:** Tied to a single server process. Cannot be shared across instances or survive restarts.
 - **No monitoring or alerting:** No visibility into API production behavior — errors, latency, or abuse are invisible until a user reports them.
-- **Generated files can go stale:** If someone edits `packages/shared/` without running `npm run build:extension`, the extension uses outdated detection logic.
+- **Generated files can go stale:** If someone edits `packages/core/` without running `npm run build:extension`, the extension uses outdated detection logic.
 - **No database migrations system:** Schema changes require manual SQL. The initDb function uses CREATE TABLE IF NOT EXISTS but has no formal migration tooling.
 
 ## Operational Risks

@@ -301,7 +301,7 @@ Every dataset entry has a required `id` field. Format: `safepaste_pi_NNNNNN` (pr
 ## Key Scripts
 
 **`evaluate.js`** — the heart of the system. For each record:
-1. `require('../../packages/shared/detect')` and `require('../../packages/shared/patterns')`
+1. `require('../../packages/core/detect')` and `require('../../packages/core/patterns')`
 2. Run: normalizeText → findMatches → computeScore → isBenignContext → hasExfiltrationMatch → applyDampening
 3. Compare `flagged` (threshold 35) vs `expected_flagged`
 4. Categories with `detected: false` in `categories.js` are reported as "detection gaps", not false negatives
@@ -455,8 +455,8 @@ Real-world attack collection and weekly orchestrator.
 
 | File | Used By | How |
 |------|---------|-----|
-| `packages/shared/detect.js` | evaluate.js | Calls all 8 pure functions for analysis |
-| `packages/shared/patterns.js` | evaluate.js, categories.js | Source of truth for detection capability |
+| `packages/core/detect.js` | evaluate.js | Calls all 8 pure functions for analysis |
+| `packages/core/patterns.js` | evaluate.js, categories.js | Source of truth for detection capability |
 | `packages/api/detector.js` | Reference | evaluate.js follows this exact `analyze()` pattern |
 | `scripts/build-extension.js` | Reference | Follow its conventions for path resolution, console output |
 | `datasets/prompt-injection/format.md` | schema.js | Schema validation implements this spec |

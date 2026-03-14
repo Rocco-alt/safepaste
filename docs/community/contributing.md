@@ -10,7 +10,7 @@ New regex patterns that catch prompt injection attacks SafePaste currently misse
 
 **How to add a pattern:**
 1. Check `docs/security/attack-taxonomy.md` for existing categories and the "NOT YET DETECTED" section for known gaps
-2. Add a pattern object to `packages/shared/patterns.js`:
+2. Add a pattern object to `packages/core/patterns.js`:
    ```js
    {
      id: "category.descriptive_name",
@@ -55,7 +55,7 @@ Corrections, clarifications, or expansions to any file in `docs/`.
 ## Code Style
 
 - **Vanilla JavaScript** — no TypeScript, no frameworks, no build tools beyond the extension sync script
-- **`var`** in `packages/shared/` (broad compatibility for browser wrapping)
+- **`var`** in `packages/core/` (broad compatibility for browser wrapping)
 - **`const`/`let`** in `packages/api/` and `packages/extension/`
 - Follow existing patterns in the codebase — read the file you're modifying before adding code
 - No unnecessary dependencies — if it can be done with standard APIs, do it that way

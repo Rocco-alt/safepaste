@@ -7,7 +7,7 @@
 
 /**
  * 17 prompt injection attack categories.
- * Maps to pattern IDs in packages/shared/patterns.js.
+ * Maps to pattern IDs in packages/core/patterns.js.
  */
 const PROMPT_INJECTION_CATEGORIES = {
   instruction_override: {

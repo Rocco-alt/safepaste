@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0
-**Last updated:** Session #5 (2026-03-14)
+**Last updated:** Session #6 (2026-03-14)
 
 ## What's Live
 
@@ -9,6 +9,7 @@
 - REST API v1 (scan, batch scan, patterns, usage, key management, free signup)
 - Landing page + API docs website
 - Stripe billing for Pro tier
+- @safepaste/core v0.1.0 SDK (ready to publish)
 
 ## What's Working
 
@@ -23,6 +24,17 @@
 - Free tier signup (POST /v1/signup)
 - Pro tier Stripe checkout + webhook provisioning
 - 19 detection patterns with weighted scoring and benign context dampening
+
+## @safepaste/core SDK (Session #6)
+
+- `scanPrompt(text, options)` → `{ flagged, risk, score, threshold, matches[], meta{} }`
+- 8 low-level functions re-exported for advanced use
+- 19 PATTERNS exported for custom pipelines
+- Zero dependencies, works in Node.js >=14 and modern browsers
+- 92 standalone unit tests, JSDoc on all exports
+- API detector.js refactored to thin wrapper over scanPrompt()
+- Dataset scripts refactored to use scanPrompt()
+- 129 total tests (92 core + 37 API), all passing
 
 ## Detection Engine (Session #5 hardening)
 
@@ -47,7 +59,7 @@
 
 ## What's Not Working / Incomplete
 
-- No automated tests for the extension (only API has tests)
+- No automated tests for the extension (only API and core have tests)
 - No CI/CD pipeline
 - No monitoring or alerting for the API
 - In-memory rate limiting resets on server restart
@@ -55,3 +67,4 @@
 - Dataset ingestion adapters not yet implemented (Phase 3)
 - 7 undetected attack classes (context_smuggling, tool_call_injection, system_message_spoofing, roleplay_jailbreak, translation_attack, multi_turn_injection, instruction_fragmentation)
 - Benchmark has only 5 records — needs growth before v0.3.0
+- @safepaste/core not yet published to npm
