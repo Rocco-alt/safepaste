@@ -1,0 +1,54 @@
+name: SafePaste CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Tests (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: packages/api/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Core unit tests
+        run: node packages/core/test.js
+
+      - name: API integration tests
+        run: node packages/api/test.js
+
+  sync-check:
+    name: Extension sync check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/api/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Rebuild generated extension files
+        run: npm run build:extension
+
+      - name: Verify generated files are in sync
+        run: git diff --exit-code -I "^// Generated:" packages/extension/detect-core.js packages/extension/patterns.js
