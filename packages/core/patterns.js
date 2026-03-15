@@ -17,7 +17,7 @@
 
 /**
  * Built-in prompt injection detection patterns.
- * 39 regex patterns organized by attack category:
+ * 40 regex patterns organized by attack category:
  * instruction_override, role_hijacking, system_prompt, exfiltration,
  * secrecy, jailbreak, obfuscation, instruction_chaining, meta,
  * tool_call_injection, system_message_spoofing, roleplay_jailbreak,
@@ -138,6 +138,13 @@ const PATTERNS = [
     category: "exfiltration",
     match: /\b(?:repeat|recite|reproduce|echo|reprint)\s+(?:\w+\s+){0,3}(?:above|before|prior|preceding)\b/i,
     explanation: "Asks to repeat or reproduce content from above, often targeting system prompts."
+  },
+  {
+    id: "exfiltrate.positional_prompt",
+    weight: 35,
+    category: "exfiltration",
+    match: /\b(?:beginning|start|top|first(?:\s+part)?)\s+of\s+(?:this|the|your)\s+(?:prompt|conversation|instructions|system\s+prompt)\b/i,
+    explanation: "References the beginning or start of a prompt/conversation, often used to extract system prompt content."
   },
 
   // === Secrecy ===

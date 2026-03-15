@@ -41,7 +41,7 @@ const PROMPT_INJECTION_CATEGORIES = {
     name: 'Data Exfiltration',
     description: 'Data exfiltration via markup or extraction commands',
     detected: true,
-    patternIds: ['exfiltrate.hidden', 'exfiltrate.markdown_image', 'exfiltrate.html_img', 'exfiltrate.repeat_above']
+    patternIds: ['exfiltrate.hidden', 'exfiltrate.markdown_image', 'exfiltrate.html_img', 'exfiltrate.repeat_above', 'exfiltrate.positional_prompt']
   },
   jailbreak_bypass: {
     name: 'Jailbreak Bypass',
@@ -83,13 +83,13 @@ const PROMPT_INJECTION_CATEGORIES = {
     name: 'System Message Spoofing',
     description: 'Faking system-level messages or delimiters',
     detected: true,
-    patternIds: ['spoof.system_delimiter', 'spoof.config_disable', 'spoof.restrictions_lifted']
+    patternIds: ['spoof.system_delimiter', 'spoof.config_disable', 'spoof.restrictions_lifted', 'spoof.instructed_override']
   },
   roleplay_jailbreak: {
     name: 'Roleplay Jailbreak',
     description: 'Using roleplay framing to bypass safety',
     detected: true,
-    patternIds: ['roleplay.fictional_ai', 'roleplay.creative_bypass', 'roleplay.no_restrictions_persona']
+    patternIds: ['roleplay.fictional_ai', 'roleplay.creative_bypass', 'roleplay.no_restrictions_persona', 'roleplay.demonstrate_unrestricted']
   },
   translation_attack: {
     name: 'Translation Attack',
@@ -101,7 +101,7 @@ const PROMPT_INJECTION_CATEGORIES = {
     name: 'Multi-Turn Injection',
     description: 'Attacks split across multiple conversation turns',
     detected: true,
-    patternIds: ['multi_turn.false_prior_agreement', 'multi_turn.continuation_claim']
+    patternIds: ['multi_turn.false_prior_agreement', 'multi_turn.continuation_claim', 'multi_turn.policy_change_claim']
   },
   instruction_fragmentation: {
     name: 'Instruction Fragmentation',

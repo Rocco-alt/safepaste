@@ -170,7 +170,7 @@ console.log('\napplyDampening:');
 console.log('\nPATTERNS:');
 {
   assert('is an array', Array.isArray(PATTERNS));
-  assert('has 39 patterns', PATTERNS.length === 39);
+  assert('has 40 patterns', PATTERNS.length === 40);
 
   var allValid = PATTERNS.every(function (p) {
     return typeof p.id === 'string' &&
