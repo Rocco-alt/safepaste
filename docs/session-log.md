@@ -60,6 +60,11 @@
 - **Decided:** Benchmark keeps undetected-category records (architecture defines it as frozen evaluation set, not regression gate); evaluate.js routes these to not_currently_detected, not FN; partition.js assigns mechanically by category without filtering by detection status
 - **Next:** Phase 2 — ingestion infrastructure (ingest.js + HuggingFace/JSONL adapters); or expand remaining 7 categories from 5→11 curated; or Phase 3 external data ingestion
 
+## Session #17 — 2026-03-15
+- **Built:** Phase 3 external ingestion (deepset/prompt-injections, 662 records: 399 benign, 263 attack, 0 FP); analyze.js dataset poisoning diagnostics (8 analysis sections) + lib/lang-detect.js; external_attack quarantine category; HuggingFace adapter binary label normalization
+- **Decided:** external_attack (detected:false) over mapping to instruction_override or allowing null categories; optional category support deferred (evaluate.js FN inflation guard required first); token-based template detection (8 tokens) over character prefix
+- **Next:** Post-ingestion review — triage analyze.js output on scraped/, re-run full eval with merged data, update stale docs, decide on scraped→curated promotion
+
 ## Session #16 — 2026-03-15
 - **Built:** Phase 2 ingestion infrastructure — ingest.js CLI orchestrator + 2 adapters (jsonl-file, huggingface); 3-pass dedup (batch/curated/scraped), schema validation, category mapping, opt-in expected_flagged inference, dry-run mode; verified end-to-end with test fixture
 - **Decided:** expected_flagged gated behind --infer-expected-flagged (omitted by default → schema rejection, intentional); dedup scope restricted to curated/ + scraped/ only (not generated/partitions); ID allocation assumes single-process (documented); per-category file organization consistent with rest of pipeline
