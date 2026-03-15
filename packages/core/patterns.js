@@ -17,7 +17,7 @@
 
 /**
  * Built-in prompt injection detection patterns.
- * 36 regex patterns organized by attack category:
+ * 39 regex patterns organized by attack category:
  * instruction_override, role_hijacking, system_prompt, exfiltration,
  * secrecy, jailbreak, obfuscation, instruction_chaining, meta,
  * tool_call_injection, system_message_spoofing, roleplay_jailbreak,
@@ -260,10 +260,17 @@ const PATTERNS = [
   },
   {
     id: "spoof.restrictions_lifted",
-    weight: 28,
+    weight: 35,
     category: "system_message_spoofing",
-    match: /\b(?:restrictions?|constraints?|filters?|guardrails?)\s+(?:have\s+been|are\s+(?:now|temporarily|permanently))\s+(?:lifted|removed|suspended|disabled|deactivated)\b/i,
+    match: /\b(?:(?:content|safety|ethical|ai)\s+(?:restrictions?|constraints?|filters?)|guardrails?|content\s+filters?|safety\s+(?:measures?|checks?))\s+(?:have\s+been\s+(?:temporarily\s+|permanently\s+|fully\s+)?|are\s+(?:now|temporarily|permanently)\s+)(?:lifted|removed|suspended|disabled|deactivated)\b/i,
     explanation: "Claims that safety restrictions have been lifted or removed."
+  },
+  {
+    id: "spoof.instructed_override",
+    weight: 30,
+    category: "system_message_spoofing",
+    match: /\b(?:the\s+)?(?:assistant|model|ai|chatbot)\s+(?:should|must|will|is\s+(?:now|hereby))\s+(?:now\s+)?(?:authorized\s+to\s+)?(?:provide|respond|answer|operate|generate)\b.{0,40}\b(?:without\s+(?:(?:any|content|all)\s+)?(?:redacting|filtering|restricting|censoring|limitations?|restrictions?)|to\s+all\s+(?:questions?|queries?|requests?))\b/i,
+    explanation: "Contains instructions for the AI to operate without content restrictions."
   },
 
   // === Roleplay jailbreak ===
@@ -271,7 +278,7 @@ const PATTERNS = [
     id: "roleplay.fictional_ai",
     weight: 35,
     category: "roleplay_jailbreak",
-    match: /\b(?:you are|you were|you will be|you're)\b.{0,40}\ban?\s+(?:ai|model|assistant|chatbot)\b.{0,80}\b(?:without|no)\s+(?:any\s+)?(?:safety|ethical|content|restrictions?|filters?|guidelines?|boundaries|limits|measures)\b/i,
+    match: /\b(?:you are|you were|you will be|you're)\b.{0,60}\b(?:ai|model|assistant|chatbot)\b.{0,120}\b(?:without|no)\s+(?:any\s+)?(?:safety|ethical|content|restrictions?|filters?|guidelines?|boundaries|limits|measures)\b/i,
     explanation: "Asks the AI to roleplay as an unrestricted AI without safety measures."
   },
   {
@@ -288,21 +295,35 @@ const PATTERNS = [
     match: /\b(?:character|persona|role|identity|alter\s+ego)\b.{0,60}\b(?:no\s+(?:boundaries|restrictions?|filters?|rules?|limits)|without\s+(?:any\s+)?(?:boundaries|restrictions?|filters?|rules?|limits))\b/i,
     explanation: "Creates a persona or character with no restrictions."
   },
+  {
+    id: "roleplay.demonstrate_unrestricted",
+    weight: 30,
+    category: "roleplay_jailbreak",
+    match: /\b(?:demonstrate|prove|show|provide)\b.{0,60}\b(?:responses?|examples?|answers?|output)\b.{0,30}\b(?:unrestricted|unfiltered|uncensored)\b/i,
+    explanation: "Requests demonstration of unrestricted or unfiltered AI responses."
+  },
 
   // === Multi-turn injection ===
   {
     id: "multi_turn.false_prior_agreement",
-    weight: 25,
+    weight: 30,
     category: "multi_turn_injection",
     match: /\byou\s+(?:agreed|promised|confirmed|said|mentioned|showed|provided|identified|outlined|explained|recommended|suggested)\b.{0,60}\b(?:share|access|exception|help|remove|show|reveal|provide|give|output)\b/i,
     explanation: "Falsely claims the AI previously agreed to share restricted content."
   },
   {
     id: "multi_turn.continuation_claim",
-    weight: 22,
+    weight: 28,
     category: "multi_turn_injection",
     match: /\b(?:continuing\s+(?:our|the|from)|let's\s+continue\s+(?:where|from)|as\s+we\s+(?:agreed|discussed)|(?:our|the)\s+(?:previous|earlier|last)\s+(?:conversation|session|chat|discussion))\b/i,
     explanation: "Claims to be continuing a previous conversation to establish false context."
+  },
+  {
+    id: "multi_turn.policy_change_claim",
+    weight: 28,
+    category: "multi_turn_injection",
+    match: /\b(?:policy|rules?|restrictions?|guidelines?)\s+(?:has|have)\s+(?:been\s+)?(?:updated|changed|modified|revised|relaxed)\b.{0,60}\b(?:no\s+longer|don't|doesn't|do\s+not)\s+(?:apply|exist|hold|matter)\b/i,
+    explanation: "Claims that policy or restrictions have changed to justify bypassing safety."
   }
 ];
 

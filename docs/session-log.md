@@ -50,6 +50,11 @@
 - **Decided:** Payloads independently authored (not from curated dataset — separation of evaluation and tooling); @safepaste/core treated as black box (no pattern ID coupling); 80% default pass threshold (accounts for low-weight categories); zero external dependencies
 - **Next:** Improve recall for weak categories (roleplay_jailbreak 0.49, multi_turn_injection 0.40); or SDK Phase 3 (@safepaste/guard)
 
+## Session #12 — 2026-03-15
+- **Built:** Deep review + recall improvement for 3 weak categories — 3 weight adjustments, 2 regex fixes, 3 new patterns (39 total); fixed ADR-005 doc/code drift (dampening 0.75→0.85); added CLI tests to CI; 28 new smoke tests (319 total); P=1.0 R=0.867 0 FP
+- **Decided:** Rejected 3 proposed patterns after 4-reviewer design review (content moderation drift, org communication FPs, 100% benign match rate); tightened restrictions_lifted regex to AI-specific terms; restored modifier requirement after catching FP during verification; dynamic pattern count assertions in tests
+- **Next:** Continue recall improvement (multi_turn 0.50, roleplay 0.585); SDK Phase 3 (@safepaste/guard) research; extension test coverage
+
 ## Session #10 — 2026-03-14
 - **Built:** Deep review (full repo-grounded context reconstruction); fixed evaluate.js double-counting bug — was reading both source dirs (curated/generated) and partition dirs (training/validation/benchmark), inflating record count 2x (1075→535); corrected metrics: P=1.0 R=0.838 0 FP (not P=0.999 1 FP)
 - **Decided:** Evaluate from partition dirs only when dataset root has both source and partition dirs; the "1 FP" from sessions #8-9 was a phantom caused by examples/ records lacking expected_flagged; no FP investigation needed

@@ -1,7 +1,7 @@
 # Current State
 
 **Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core), 0.1.0 (@safepaste/test)
-**Last updated:** Session #11 (2026-03-14)
+**Last updated:** Session #12 (2026-03-15)
 
 ## What's Live
 
@@ -35,18 +35,19 @@
 - 166 standalone unit tests, JSDoc on all exports
 - API detector.js refactored to thin wrapper over scanPrompt()
 - Dataset scripts refactored to use scanPrompt()
-- 291 total tests (166 core + 88 test + 37 API), all passing
+- 319 total tests (194 core + 88 test + 37 API), all passing
 
 ## Detection Engine (Session #8 expansion)
 
-- 36 patterns covering 13 of 17 attack categories (was 19 patterns / 9 categories)
-- 4 existing patterns expanded (ignore_previous, jailbreak.dan, system.prompt_reference, encoding.obfuscated)
-- 17 new patterns across 8 categories (6 FN fixes + 11 new category patterns)
+- 39 patterns covering 13 of 17 attack categories (was 36 patterns pre-session #12)
+- Session #12: 3 weight adjustments, 2 regex fixes, 3 new patterns (demonstrate_unrestricted, policy_change_claim, instructed_override)
+- restrictions_lifted regex tightened to AI-specific terms (content/safety/ethical/ai prefix required)
+- fictional_ai regex: article requirement removed, distance expanded to 120 chars
 - normalizeText() collapses newlines + whitespace before pattern matching
 - Dampening factor: 0.85 — attacks scoring 42+ survive dampening
 - Exfiltration patterns (including repeat_above) never dampened
-- Benchmark: P=1.0, R=1.0 (was P=1.0, R=0.545)
-- Full eval: P=1.0, R=0.838, 0 FP (corrected in session #10 — prior "1 FP" was double-counting artifact)
+- Full eval: P=1.0, R=0.867, 0 FP (was R=0.838 pre-session #12)
+- Per-category recall: multi_turn 0.50, roleplay 0.585, spoof 0.81 (was 0.40, 0.49, 0.71)
 
 ## Dataset Pipeline (Session #8 versioning)
 
