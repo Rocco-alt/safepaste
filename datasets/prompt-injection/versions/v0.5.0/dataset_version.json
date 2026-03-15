@@ -1,0 +1,66 @@
+{
+  "version": "0.5.0",
+  "date": "2026-03-15",
+  "counts": {
+    "total": 571,
+    "by_partition": {
+      "training": 406,
+      "validation": 127,
+      "benchmark": 38
+    },
+    "by_label": {
+      "attack": 555,
+      "benign": 13,
+      "edge-case": 3
+    },
+    "by_source": {
+      "manual": 145,
+      "synthetic_mutation": 424,
+      "scraped": 2
+    },
+    "by_category": {
+      "benign": 11,
+      "context_smuggling": 46,
+      "data_exfiltration": 28,
+      "encoding_obfuscation": 28,
+      "instruction_chaining": 29,
+      "instruction_fragmentation": 47,
+      "instruction_override": 30,
+      "jailbreak_bypass": 30,
+      "meta_prompt_attacks": 24,
+      "multi_turn_injection": 45,
+      "role_hijacking": 30,
+      "roleplay_jailbreak": 45,
+      "secrecy_manipulation": 29,
+      "system_message_spoofing": 45,
+      "system_prompt_extraction": 24,
+      "tool_call_injection": 39,
+      "translation_attack": 41
+    }
+  },
+  "evaluation": {
+    "raw": {
+      "precision": 0.985,
+      "recall": 0.739,
+      "true_positives": 385,
+      "true_negatives": 44,
+      "false_positives": 6,
+      "false_negatives": 136
+    },
+    "adjusted": {
+      "precision": 1,
+      "recall": 0.873,
+      "true_positives": 385,
+      "true_negatives": 44,
+      "false_positives": 0,
+      "false_negatives": 56,
+      "mutation_label_divergence": 6,
+      "not_currently_detected": 80
+    }
+  },
+  "detection": {
+    "patterns_count": 39,
+    "threshold": 35
+  },
+  "previous_version": "v0.4.0"
+}

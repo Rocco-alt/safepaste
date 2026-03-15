@@ -60,6 +60,11 @@
 - **Decided:** Benchmark keeps undetected-category records (architecture defines it as frozen evaluation set, not regression gate); evaluate.js routes these to not_currently_detected, not FN; partition.js assigns mechanically by category without filtering by detection status
 - **Next:** Phase 2 — ingestion infrastructure (ingest.js + HuggingFace/JSONL adapters); or expand remaining 7 categories from 5→11 curated; or Phase 3 external data ingestion
 
+## Session #18 — 2026-03-15
+- **Built:** Deep repo review + manual scraped dataset review — promoted 2 records to curated (DAN jailbreak → roleplay_jailbreak, social engineering prompt extraction → system_prompt_extraction), removed 25 noise/mislabeled records, created dataset v0.5.0 snapshot (571 records, 38 benchmark); updated current-state.md and backlog
+- **Decided:** Scraped records stay quarantined by default; source field preserved as "scraped" on promotion (not rewritten); generic "ignore instructions" content redirections are not SafePaste injection attacks; mislabeled deepset records removed; benchmark partition rebalance on curated changes is expected behavior (only versioned records pinned)
+- **Next:** Extension test coverage (largest testing gap); system_prompt_extraction pattern work (safepaste_pi_000647 undetected); categories.js patternIds drift fix; stale architecture docs refresh (pattern counts)
+
 ## Session #17 — 2026-03-15
 - **Built:** Phase 3 external ingestion (deepset/prompt-injections, 662 records: 399 benign, 263 attack, 0 FP); analyze.js dataset poisoning diagnostics (8 analysis sections) + lib/lang-detect.js; external_attack quarantine category; HuggingFace adapter binary label normalization
 - **Decided:** external_attack (detected:false) over mapping to instruction_override or allowing null categories; optional category support deferred (evaluate.js FN inflation guard required first); token-based template detection (8 tokens) over character prefix
