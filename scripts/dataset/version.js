@@ -15,6 +15,7 @@ const { readAllJsonl, readJsonl, writeJsonl } = require('./lib/io');
 const { contentHash } = require('./lib/dedup');
 const { analyzeText, THRESHOLD } = require('./evaluate');
 const { findLatestVersion } = require('./merge');
+const { isDetected } = require('./lib/categories');
 
 const { PATTERNS } = require('../../packages/core');
 
@@ -104,31 +105,54 @@ function main() {
   // 5. Run evaluation on all records
   const allRecords = [...training, ...validation, ...benchmark];
 
-  let tp = 0, tn = 0, fp = 0, fn = 0;
+  // Raw counters (all FP/FN counted)
+  let rawTp = 0, rawTn = 0, rawFp = 0, rawFn = 0;
+  // Adjusted counters (detection-gap FN and mutation-divergence FP filtered out)
+  let adjTp = 0, adjTn = 0, adjFp = 0, adjFn = 0;
+  let mutationLabelDivergence = 0, notCurrentlyDetected = 0;
+
   const byLabel = { attack: 0, benign: 0, 'edge-case': 0 };
   const bySource = {};
   const byCategory = {};
-  const undetectedClasses = [];
 
   for (const record of allRecords) {
     const result = analyzeText(record.text);
+    const cat = record.category || 'unknown';
 
     byLabel[record.label] = (byLabel[record.label] || 0) + 1;
     bySource[record.source] = (bySource[record.source] || 0) + 1;
     byCategory[record.category] = (byCategory[record.category] || 0) + 1;
 
-    if (record.expected_flagged && result.flagged) tp++;
-    else if (!record.expected_flagged && !result.flagged) tn++;
-    else if (!record.expected_flagged && result.flagged) fp++;
-    else fn++;
+    if (record.expected_flagged && result.flagged) {
+      rawTp++; adjTp++;
+    } else if (!record.expected_flagged && !result.flagged) {
+      rawTn++; adjTn++;
+    } else if (record.expected_flagged && !result.flagged) {
+      rawFn++;
+      if (isDetected(cat) === false) {
+        notCurrentlyDetected++;
+      } else {
+        adjFn++;
+      }
+    } else {
+      // !expected_flagged && flagged
+      rawFp++;
+      if (record.source === 'synthetic_mutation' &&
+          record.mutation_changes_mechanism === true) {
+        mutationLabelDivergence++;
+      } else {
+        adjFp++;
+      }
+    }
   }
 
-  const precision = tp + fp > 0 ? tp / (tp + fp) : 1;
-  const recall = tp + fn > 0 ? tp / (tp + fn) : 1;
-  const fpRate = tn + fp > 0 ? fp / (tn + fp) : 0;
-  const fnRate = tp + fn > 0 ? fn / (tp + fn) : 0;
+  const rawPrecision = rawTp + rawFp > 0 ? rawTp / (rawTp + rawFp) : 1;
+  const rawRecall = rawTp + rawFn > 0 ? rawTp / (rawTp + rawFn) : 1;
+  const adjPrecision = adjTp + adjFp > 0 ? adjTp / (adjTp + adjFp) : 1;
+  const adjRecall = adjTp + adjFn > 0 ? adjTp / (adjTp + adjFn) : 1;
 
-  console.log(`\nEvaluation: P=${precision.toFixed(3)} R=${recall.toFixed(3)} FP=${fp} FN=${fn}`);
+  console.log(`\nEvaluation (raw):      P=${rawPrecision.toFixed(3)} R=${rawRecall.toFixed(3)} FP=${rawFp} FN=${rawFn}`);
+  console.log(`Evaluation (adjusted): P=${adjPrecision.toFixed(3)} R=${adjRecall.toFixed(3)} FP=${adjFp} FN=${adjFn} (${notCurrentlyDetected} detection-gap, ${mutationLabelDivergence} mutation-divergence)`);
 
   // 6. Create version directory
   if (!fs.existsSync(versionDir)) {
@@ -156,14 +180,24 @@ function main() {
       by_category: byCategory
     },
     evaluation: {
-      precision: Math.round(precision * 1000) / 1000,
-      recall: Math.round(recall * 1000) / 1000,
-      false_positive_rate: Math.round(fpRate * 1000) / 1000,
-      false_negative_rate: Math.round(fnRate * 1000) / 1000,
-      true_positives: tp,
-      true_negatives: tn,
-      false_positives: fp,
-      false_negatives: fn
+      raw: {
+        precision: Math.round(rawPrecision * 1000) / 1000,
+        recall: Math.round(rawRecall * 1000) / 1000,
+        true_positives: rawTp,
+        true_negatives: rawTn,
+        false_positives: rawFp,
+        false_negatives: rawFn
+      },
+      adjusted: {
+        precision: Math.round(adjPrecision * 1000) / 1000,
+        recall: Math.round(adjRecall * 1000) / 1000,
+        true_positives: adjTp,
+        true_negatives: adjTn,
+        false_positives: adjFp,
+        false_negatives: adjFn,
+        mutation_label_divergence: mutationLabelDivergence,
+        not_currently_detected: notCurrentlyDetected
+      }
     },
     detection: {
       patterns_count: PATTERNS.length,
