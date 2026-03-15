@@ -43,18 +43,50 @@ Keep MEMORY.md under 50 lines. If over, move detail to topic files.
 - docs/project-state/implementation-status.md — feature status updates
 - docs/project-state/known-risks.md — new risks identified
 
-## 7. Promote Durable Knowledge
+## 7. Detector Change Check
+If `packages/core/patterns.js` was modified this session, perform these steps:
+
+1. Inspect the diff of `packages/core/patterns.js` to identify:
+   - New pattern IDs added
+   - Modified pattern IDs (weight, regex, or category changed)
+   - Removed pattern IDs
+
+2. For each change, ensure an entry exists in `docs/security/detector-history.md` using the stable header format:
+   - Added: `## YYYY-MM-DD — Pattern Added: PATTERN_ID`
+   - Modified: `## YYYY-MM-DD — Pattern Modified: PATTERN_ID`
+   - Removed: `## YYYY-MM-DD — Pattern Removed: PATTERN_ID`
+
+3. **Idempotent rules** — before writing any entry:
+   - Search the file for the pattern ID (e.g. `Pattern Added: exfiltrate.positional_prompt`)
+   - If an entry already exists for that pattern ID and date, **do not append a duplicate**
+   - If the entry exists but lacks information discovered during the session, **update it in place**
+   - Only append a new entry if the pattern ID + action does not already exist in the file
+
+4. Each entry must include:
+   ```
+   - **Pattern ID:** <id>
+   - **Category:** <category>
+   - **Weight:** <weight>
+   - **Reason:** <why this pattern was added/modified/removed>
+   - **Dataset Example:** <record ID if applicable>
+   - **Evaluation Impact:** <metric changes, or "none">
+   - **Session:** #N
+   ```
+
+5. **Safety rule:** Never delete detector history entries automatically. Pattern removals and modifications get their own entries — they do not replace previous entries.
+
+## 8. Promote Durable Knowledge
 - Architecture decisions made → create ADR via /new-decision workflow
 - Security insights learned → update relevant docs/security/ file
 - Security discoveries or novel attack observations → append to docs/security/research-log.md
 - New backlog items identified → add to docs/backlog.md
 
-## 8. Commit and Push
+## 9. Commit and Push
 If there are uncommitted changes:
 - Stage and commit with a descriptive message
 - Push to origin
 
-## 9. Confirm Handoff
+## 10. Confirm Handoff
 Tell the user:
 - What was recorded
 - What the next session should start with
