@@ -11,6 +11,7 @@
 - Stripe billing for Pro tier
 - @safepaste/core v0.3.0 SDK (published to npm)
 - @safepaste/test v0.1.0 CLI (published to npm — attack simulation, 26 payloads, 13 categories, 88 tests)
+- @safepaste/guard v0.1.0 middleware (agent runtime security — wrapTool/wrapTools, 4 modes, 101 tests)
 
 ## What's Working
 
@@ -35,7 +36,7 @@
 - 166 standalone unit tests, JSDoc on all exports
 - API detector.js refactored to thin wrapper over scanPrompt()
 - Dataset scripts refactored to use scanPrompt()
-- 319 total tests (194 core + 88 test + 37 API), all passing
+- 446 total tests (194 core + 88 test + 128 guard + 37 API), all passing
 
 ## Detection Engine (Session #8 expansion)
 
@@ -60,10 +61,25 @@
 - Version v0.3.0 snapshot with benchmark freeze enforcement
 - 3 undetected attack classes: context_smuggling, translation_attack, instruction_fragmentation
 
+## @safepaste/guard Middleware (Session #13)
+
+- `createGuard(options)` → guard instance with `scanInput`, `scanOutput`, `wrapTool`, `wrapTools`
+- 4 modes: log, warn (default), block, callback function
+- Per-direction mode: `{ input: 'warn', output: 'block' }`
+- `wrapTool(name, fn)` — scans input args + output result, handles sync/async
+- `wrapTools(toolMap)` — batch wrapping for all tools in an object
+- Fail-open: scanning failures don't block tools, reported to `on.error`
+- `GuardError` thrown in block mode (`.name === 'GuardError'`, `.guardResult`)
+- `scanToolInput`/`scanToolOutput` — standalone functions, always log mode
+- Framework-agnostic: works with OpenAI SDK, Vercel AI SDK, LangChain, custom agent loops
+- Peer dependency on `@safepaste/core >=0.3.0`, zero runtime deps
+- 128 standalone tests (including 4 safety verification sections)
+
 ## CI/CD Pipeline (Session #9)
 
 - GitHub Actions workflow: `.github/workflows/ci.yml`
 - 3 parallel jobs: Tests (Node 18), Tests (Node 22), Extension sync check
+- Guard unit tests added to CI pipeline (between CLI and API steps)
 - Branch protection on main: all 3 checks required, strict mode (PRs must be up-to-date)
 - Extension sync check uses `git diff -I "^// Generated:"` to ignore timestamp-only diffs
 - No env vars needed — API falls back to in-memory demo keys

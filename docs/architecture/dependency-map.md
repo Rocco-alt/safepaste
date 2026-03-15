@@ -6,9 +6,10 @@
 core/ ──build──→ extension/   (via scripts/build-extension.js, one-way copy)
 core/ ──require──→ api/       (direct Node.js require)
 core/ ──require──→ test/      (peer dependency, black-box scanPrompt() calls)
+core/ ──require──→ guard/     (peer dependency, black-box scanPrompt() calls)
 ```
 
-Extension, API, and test never depend on each other. Website is standalone.
+Extension, API, test, and guard never depend on each other. Website is standalone.
 
 ## External Dependencies
 
@@ -22,6 +23,11 @@ Extension, API, and test never depend on each other. Website is standalone.
 - stripe — billing integration (optional, disabled without STRIPE_SECRET_KEY)
 
 ### Test CLI (packages/test/package.json)
+
+- @safepaste/core (peer dependency, >=0.3.0)
+- No other npm dependencies (zero runtime deps)
+
+### Guard Middleware (packages/guard/package.json)
 
 - @safepaste/core (peer dependency, >=0.3.0)
 - No other npm dependencies (zero runtime deps)

@@ -32,6 +32,9 @@ jobs:
       - name: CLI unit tests
         run: node packages/test/test.js
 
+      - name: Guard unit tests
+        run: node packages/guard/test.js
+
       - name: API integration tests
         run: node packages/api/test.js
 

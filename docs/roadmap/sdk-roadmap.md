@@ -60,7 +60,7 @@ SafePaste is evolving from a detection tool into developer-first AI security inf
 
 **Scope:** Large. Requires research into agent attack surfaces, framework integration design, and new detection patterns.
 
-**Status:** Not started. The threat model identifies "indirect prompt injection via tool use" as an undetected category.
+**Status:** **Complete.** `@safepaste/guard` v0.1.0 — `createGuard()` factory with `wrapTool`/`wrapTools` function wrapping, 4 modes (log/warn/block/callback), per-direction mode config, fail-open scanning, `scanToolInput`/`scanToolOutput` standalone functions, 101 tests. Framework-agnostic (works with OpenAI SDK, Vercel AI SDK, LangChain, custom loops). Agent-specific detection patterns deferred to core.
 
 ---
 
@@ -91,5 +91,5 @@ SafePaste is evolving from a detection tool into developer-first AI security inf
 |-------|---------|-------|--------|----------------|
 | 1 | SafePaste Core (SDK) | Small-medium | Foundation exists | None |
 | 2 | SafePaste Test (CLI) | Medium | **Complete** | Phase 1 + dataset |
-| 3 | SafePaste Guard (Agent) | Large | Not started | Phase 1 + new patterns |
+| 3 | SafePaste Guard (Agent) | Large | **Complete** | Phase 1 |
 | 4 | SafePaste Cloud (Platform) | Large | Not started | Phases 1-3 |

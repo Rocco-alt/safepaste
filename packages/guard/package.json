@@ -1,0 +1,36 @@
+{
+  "name": "@safepaste/guard",
+  "version": "0.1.0",
+  "description": "Agent runtime security middleware — scans tool inputs/outputs for prompt injection",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "scan.js",
+    "modes.js",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@safepaste/core": ">=0.3.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rocco-alt/safepaste.git",
+    "directory": "packages/guard"
+  },
+  "bugs": {
+    "url": "https://github.com/Rocco-alt/safepaste/issues"
+  },
+  "homepage": "https://github.com/Rocco-alt/safepaste/tree/main/packages/guard#readme",
+  "keywords": [
+    "prompt-injection",
+    "ai-security",
+    "agent-security",
+    "llm-guard",
+    "middleware",
+    "tool-use-security"
+  ]
+}

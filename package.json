@@ -4,9 +4,10 @@
   "scripts": {
     "postinstall": "npm install --prefix packages/api",
     "start": "node packages/api/server.js",
-    "test": "node packages/core/test.js && node packages/test/test.js && node packages/api/test.js",
+    "test": "node packages/core/test.js && node packages/test/test.js && node packages/guard/test.js && node packages/api/test.js",
     "test:core": "node packages/core/test.js",
     "test:test": "node packages/test/test.js",
+    "test:guard": "node packages/guard/test.js",
     "test:api": "node packages/api/test.js",
     "build:extension": "node scripts/build-extension.js",
     "migrate": "node packages/api/db.js",
