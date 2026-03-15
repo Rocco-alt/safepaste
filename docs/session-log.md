@@ -60,6 +60,11 @@
 - **Decided:** Benchmark keeps undetected-category records (architecture defines it as frozen evaluation set, not regression gate); evaluate.js routes these to not_currently_detected, not FN; partition.js assigns mechanically by category without filtering by detection status
 - **Next:** Phase 2 — ingestion infrastructure (ingest.js + HuggingFace/JSONL adapters); or expand remaining 7 categories from 5→11 curated; or Phase 3 external data ingestion
 
+## Session #16 — 2026-03-15
+- **Built:** Phase 2 ingestion infrastructure — ingest.js CLI orchestrator + 2 adapters (jsonl-file, huggingface); 3-pass dedup (batch/curated/scraped), schema validation, category mapping, opt-in expected_flagged inference, dry-run mode; verified end-to-end with test fixture
+- **Decided:** expected_flagged gated behind --infer-expected-flagged (omitted by default → schema rejection, intentional); dedup scope restricted to curated/ + scraped/ only (not generated/partitions); ID allocation assumes single-process (documented); per-category file organization consistent with rest of pipeline
+- **Next:** Phase 3 — use ingest tool to pull real external datasets (e.g. deepset/prompt-injections from HuggingFace); or expand weak categories; or extension test coverage
+
 ## Session #14 — 2026-03-15
 - **Built:** Agent simulation validation (examples/agent-simulation.js — 35 assertions, 7 scenarios, CI step); published @safepaste/guard@0.1.0 to npm; SDK example (examples/sdk-agent-openai.js); updated all 3 package READMEs (core 36→39 patterns, "See also" cross-references); changelog + project state updates
 - **Decided:** Simulation uses synthetic payloads only (not dataset records — preserves evaluation boundary); OpenAI example framed as one provider, not canonical (guard is framework-agnostic); CI calls npm script not raw path (prevents drift)

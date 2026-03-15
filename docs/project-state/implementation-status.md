@@ -4,7 +4,7 @@
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Regex pattern matching | Done | 36 patterns in 13 categories |
+| Regex pattern matching | Done | 39 patterns in 13 categories |
 | Weighted scoring | Done | Weights 15-40, capped at 100 |
 | Text normalization | Done | NFKC, zero-width char removal, whitespace collapse, lowercase |
 | Benign context dampening | Done | 15% reduction for educational content |
@@ -22,12 +22,15 @@
 | Diagnostic script | Done | diagnose.js — pattern coverage, score distribution, category×score |
 | Stats script | Done | stats.js — growth metrics, category/context distribution |
 | View script | Done | view.js — safe escaped viewer, table/json/csv output |
-| Curated dataset (PI) | Done | 111 examples, 17 categories, context_type metadata |
+| Curated dataset (PI) | Done | 145 examples, 17 categories, context_type metadata |
 | Curated dataset (RAG) | Done | 17 examples, 7 categories |
 | Mutation pipeline | Done | 7 strategies, 424 variants from 97 seeds, deterministic |
 | Merge + partitioning | Done | 535 records → 392 train / 124 val / 19 benchmark |
 | Versioning | Done | v0.3.0 snapshot, benchmark freeze enforcement |
-| Ingestion adapters | Not started | Phase 3 — HuggingFace, GitHub, CSV, JSONL |
+| Ingestion CLI (ingest.js) | Done | CLI orchestrator with field mapping, category mapping, 3-pass dedup |
+| JSONL file adapter | Done | Local file import via jsonl-file adapter |
+| HuggingFace adapter | Done | Paginated API fetch via huggingface adapter |
+| Additional adapters | Not started | GitHub, CSV, Kaggle — framework supports future adapters |
 | Telemetry collection | Not started | Phase 4 — PII stripping, sanitization |
 
 ## Attack Simulation CLI (@safepaste/test)
