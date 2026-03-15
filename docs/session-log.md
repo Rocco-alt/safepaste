@@ -60,6 +60,11 @@
 - **Decided:** Benchmark keeps undetected-category records (architecture defines it as frozen evaluation set, not regression gate); evaluate.js routes these to not_currently_detected, not FN; partition.js assigns mechanically by category without filtering by detection status
 - **Next:** Phase 2 — ingestion infrastructure (ingest.js + HuggingFace/JSONL adapters); or expand remaining 7 categories from 5→11 curated; or Phase 3 external data ingestion
 
+## Session #19 — 2026-03-15
+- **Built:** Deep review + positional prompt retrieval pattern (exfiltrate.positional_prompt) — closes benchmark gap safepaste_pi_000647 (was score 0); fixed categories.js patternIds drift (3 missing IDs from session #12); extension regenerated (40 patterns); dataset language analysis (20% German, 0% detected)
+- **Decided:** Positional prompt retrieval is a distinct mechanism from repeat_above (question-form vs imperative); multilingual detection deferred as strategic scope decision; categories.js patternIds are metadata-only (isDetected() checks boolean flag, not array length)
+- **Next:** Multilingual detection scope decision (64 German attacks at 0% recall); extension test coverage; stale architecture docs refresh (pattern counts 19→40)
+
 ## Session #18 — 2026-03-15
 - **Built:** Deep repo review + manual scraped dataset review — promoted 2 records to curated (DAN jailbreak → roleplay_jailbreak, social engineering prompt extraction → system_prompt_extraction), removed 25 noise/mislabeled records, created dataset v0.5.0 snapshot (571 records, 38 benchmark); updated current-state.md and backlog
 - **Decided:** Scraped records stay quarantined by default; source field preserved as "scraped" on promotion (not rewritten); generic "ignore instructions" content redirections are not SafePaste injection attacks; mislabeled deepset records removed; benchmark partition rebalance on curated changes is expected behavior (only versioned records pinned)
