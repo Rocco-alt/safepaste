@@ -256,6 +256,14 @@ This ensures:
 
 This policy ensures benchmark metrics are comparable across versions. Documented in `datasets/prompt-injection/README.md`.
 
+### Undetected Categories in Benchmark
+
+The stratified partitioning algorithm guarantees every attack category is represented in all three partitions, including categories that currently have no detection patterns (e.g., `context_smuggling`, `translation_attack`, `instruction_fragmentation`). This means the benchmark may contain attacks with `expected_flagged: true` that currently score 0.
+
+These records do **not** inflate the false-negative rate. `evaluate.js` checks whether a category has detection patterns via `isDetected()` from `lib/categories.js`. Records from undetected categories are reported as `not_currently_detected` — a separate metric that tracks detection gaps without penalizing precision or recall.
+
+These benchmark entries serve as forward-looking capability indicators: when new patterns are added for a previously-undetected category, benchmark recall will automatically improve, providing a measurable signal of detection coverage growth.
+
 `merge.js` writes separate files per partition into `training/`, `validation/`, `benchmark/` directories and into versioned snapshots.
 
 ## Example IDs
