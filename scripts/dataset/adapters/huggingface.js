@@ -87,7 +87,11 @@ module.exports = {
             `got row entry without .row property`
           );
         }
-        records.push(entry.row);
+        const row = entry.row;
+        // Normalize binary classification labels (HuggingFace convention)
+        if (row.label === 0) row.label = 'benign';
+        else if (row.label === 1) row.label = 'attack';
+        records.push(row);
       }
 
       offset += data.rows.length;

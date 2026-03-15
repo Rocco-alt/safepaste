@@ -109,6 +109,12 @@ const PROMPT_INJECTION_CATEGORIES = {
     detected: false,
     patternIds: []
   },
+  external_attack: {
+    name: 'External Attack',
+    description: 'Uncategorized attacks from external datasets awaiting manual review',
+    detected: false,
+    patternIds: []
+  },
   benign: {
     name: 'Benign',
     description: 'Non-attack text that should not trigger detection',
