@@ -1,11 +1,11 @@
 # Current State
 
-**Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core), 0.1.0 (@safepaste/test)
-**Last updated:** Session #12 (2026-03-15)
+**Version:** 1.2.0 (extension/API), 0.3.0 (@safepaste/core), 0.1.0 (@safepaste/test), 0.1.0 (@safepaste/guard)
+**Last updated:** Session #14 (2026-03-15)
 
 ## What's Live
 
-- Chrome extension v1.2.0 (36 detection patterns, 13 categories, 8 AI sites)
+- Chrome extension v1.2.0 (39 detection patterns, 13 categories, 8 AI sites)
 - REST API v1 (scan, batch scan, patterns, usage, key management, free signup)
 - Landing page + API docs website
 - Stripe billing for Pro tier

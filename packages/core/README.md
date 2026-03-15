@@ -2,7 +2,7 @@
 
 Deterministic prompt injection detection for LLM applications.
 
-Prompt injection is the #1 vulnerability in LLM applications — attackers embed hidden instructions in user input to hijack AI behavior. SafePaste detects these attacks using 36 regex patterns with weighted scoring, benign-context dampening, and zero dependencies. Everything runs in-process: no API keys, no network calls, no data leaves your application.
+Prompt injection is the #1 vulnerability in LLM applications — attackers embed hidden instructions in user input to hijack AI behavior. SafePaste detects these attacks using 39 regex patterns with weighted scoring, benign-context dampening, and zero dependencies. Everything runs in-process: no API keys, no network calls, no data leaves your application.
 
 ## Install
 
@@ -25,7 +25,7 @@ console.log(result.matches);  // [{ id: "override.ignore_previous", ... }, ...]
 
 ## What It Detects
 
-36 patterns across 13 attack categories:
+39 patterns across 13 attack categories:
 
 | Category | Patterns | Weight Range |
 |----------|----------|-------------|
@@ -39,9 +39,9 @@ console.log(result.matches);  // [{ id: "override.ignore_previous", ... }, ...]
 | Instruction Chaining | 2 | 15-18 |
 | Meta Prompt Attacks | 1 | 18 |
 | Tool Call Injection | 3 | 30-35 |
-| System Message Spoofing | 3 | 28-35 |
-| Roleplay Jailbreak | 3 | 25-35 |
-| Multi-Turn Injection | 2 | 22-25 |
+| System Message Spoofing | 4 | 30-35 |
+| Roleplay Jailbreak | 4 | 25-35 |
+| Multi-Turn Injection | 3 | 28-30 |
 
 ## Use Cases
 
@@ -54,7 +54,7 @@ console.log(result.matches);  // [{ id: "override.ignore_previous", ... }, ...]
 ## How It Works
 
 1. **Normalize** — NFKC Unicode normalization, zero-width character removal, whitespace collapse, lowercase
-2. **Match** — Test 36 regex patterns against normalized text
+2. **Match** — Test 39 regex patterns against normalized text
 3. **Score** — Sum matched pattern weights (capped at 100)
 4. **Context** — Check if text is educational/meta ("for example", "prompt injection research")
 5. **Dampen** — Reduce score 15% for benign contexts (never for exfiltration patterns)
@@ -116,7 +116,7 @@ For custom detection pipelines:
 
 ### `PATTERNS`
 
-Array of 36 built-in detection patterns. Each pattern has `{id, weight, category, match, explanation}`.
+Array of 39 built-in detection patterns. Each pattern has `{id, weight, category, match, explanation}`.
 
 ## Threat Model
 
@@ -167,6 +167,11 @@ if (score > 50) {
   console.log('High-confidence detection:', matches.map(m => m.id));
 }
 ```
+
+## See Also
+
+- [@safepaste/guard](https://www.npmjs.com/package/@safepaste/guard) — Agent runtime middleware. Wraps tool functions to scan inputs/outputs for prompt injection.
+- [@safepaste/test](https://www.npmjs.com/package/@safepaste/test) — Attack simulation CLI. Tests prompt injection detection across 13 categories.
 
 ## License
 

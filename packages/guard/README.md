@@ -174,6 +174,11 @@ for (var call of response.tool_calls) {
 }
 ```
 
+## See Also
+
+- [@safepaste/core](https://www.npmjs.com/package/@safepaste/core) — Detection engine. 39 regex patterns with weighted scoring and benign-context dampening.
+- [@safepaste/test](https://www.npmjs.com/package/@safepaste/test) — Attack simulation CLI. Tests prompt injection detection across 13 categories.
+
 ## License
 
 MIT

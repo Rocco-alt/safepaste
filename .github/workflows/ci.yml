@@ -35,6 +35,9 @@ jobs:
       - name: Guard unit tests
         run: node packages/guard/test.js
 
+      - name: Guard agent simulation
+        run: npm run validate:guard
+
       - name: API integration tests
         run: node packages/api/test.js
 

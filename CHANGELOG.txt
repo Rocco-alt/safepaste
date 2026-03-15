@@ -1,5 +1,17 @@
 SafePaste — Changelog
 
+@safepaste/guard 0.1.0
+- @safepaste/guard 0.1.0 published to npm — agent runtime security middleware.
+- createGuard() factory with 4 modes: log, warn (default), block, callback.
+- wrapTool(name, fn) / wrapTools(toolMap) — scans tool inputs and outputs for prompt injection.
+- Per-direction mode: { input: 'warn', output: 'block' } for stricter output scanning.
+- Fail-open scanning: scan failures don't block tools; GuardError always propagates.
+- Framework-agnostic: works with OpenAI SDK, Vercel AI SDK, LangChain, custom agent loops.
+- 128 unit tests, zero runtime dependencies, peer dependency on @safepaste/core >=0.3.0.
+- Agent simulation validation: examples/agent-simulation.js (35 assertions, 7 scenarios, runs in CI).
+- Updated @safepaste/core README: 36 → 39 patterns, corrected category table.
+- Added "See also" cross-references across all three @safepaste package READMEs.
+
 1.2.0
 - Added browser popup for quick status view and per-site toggle (click the SafePaste icon).
 - Added icon badge: green "ON" when active on an AI chat tab, gray "OFF" when disabled.

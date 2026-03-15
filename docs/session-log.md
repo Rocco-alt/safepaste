@@ -55,6 +55,11 @@
 - **Decided:** Rejected 3 proposed patterns after 4-reviewer design review (content moderation drift, org communication FPs, 100% benign match rate); tightened restrictions_lifted regex to AI-specific terms; restored modifier requirement after catching FP during verification; dynamic pattern count assertions in tests
 - **Next:** Continue recall improvement (multi_turn 0.50, roleplay 0.585); SDK Phase 3 (@safepaste/guard) research; extension test coverage
 
+## Session #14 — 2026-03-15
+- **Built:** Agent simulation validation (examples/agent-simulation.js — 35 assertions, 7 scenarios, CI step); published @safepaste/guard@0.1.0 to npm; SDK example (examples/sdk-agent-openai.js); updated all 3 package READMEs (core 36→39 patterns, "See also" cross-references); changelog + project state updates
+- **Decided:** Simulation uses synthetic payloads only (not dataset records — preserves evaluation boundary); OpenAI example framed as one provider, not canonical (guard is framework-agnostic); CI calls npm script not raw path (prevents drift)
+- **Next:** Recall improvement (multi_turn 0.50, roleplay 0.585); extension test coverage; SDK Phase 4 (@safepaste/cloud)
+
 ## Session #13 — 2026-03-15
 - **Built:** SDK Phase 3 — @safepaste/guard v0.1.0 agent runtime security middleware (6 new files, ~500 lines); createGuard() factory with wrapTool/wrapTools, 4 modes (log/warn/block/callback), per-direction mode config, fail-open scanning, GuardError; 128 tests (446 total); ADR-008; verified 4 safety invariants (no string truncation, GuardError propagation, non-text input safety, this-binding contract)
 - **Decided:** Framework-agnostic function wrapping over framework-specific plugins; fail-open on scan errors (GuardError always propagates); per-direction mode for stricter output scanning; wrapTool uses this=null (standalone functions, not methods — documented explicitly); CommonJS + zero deps

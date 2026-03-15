@@ -8,6 +8,7 @@
     "test:core": "node packages/core/test.js",
     "test:test": "node packages/test/test.js",
     "test:guard": "node packages/guard/test.js",
+    "validate:guard": "node examples/agent-simulation.js",
     "test:api": "node packages/api/test.js",
     "build:extension": "node scripts/build-extension.js",
     "migrate": "node packages/api/db.js",

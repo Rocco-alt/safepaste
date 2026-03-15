@@ -146,6 +146,11 @@ The tool treats the detector as a black box — it only checks `flagged`, `score
 - Node.js >= 14.0.0
 - `@safepaste/core` >= 0.3.0 (peer dependency)
 
+## See Also
+
+- [@safepaste/core](https://www.npmjs.com/package/@safepaste/core) — Detection engine. 39 regex patterns with weighted scoring and benign-context dampening.
+- [@safepaste/guard](https://www.npmjs.com/package/@safepaste/guard) — Agent runtime middleware. Wraps tool functions to scan inputs/outputs for prompt injection.
+
 ## License
 
 MIT
