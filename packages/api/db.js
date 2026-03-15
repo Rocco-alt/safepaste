@@ -30,7 +30,8 @@ async function initDb() {
   try {
     pool = new Pool({
       connectionString: dbUrl,
-      ssl: { rejectUnauthorized: false }, // Railway uses self-signed certs
+      ssl: dbUrl.includes('sslmode=disable') ? false
+        : { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' },
       max: 5,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000

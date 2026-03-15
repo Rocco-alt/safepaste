@@ -9,6 +9,9 @@ Thumbs.db
 # Sensitive files — NEVER commit
 SAFEPASTE API KEYS.docx
 
+# Claude Code local settings
+.claude/
+
 # Marketing/demo assets (not source code)
 *.png
 *.docx

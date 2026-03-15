@@ -9,7 +9,7 @@ SafePaste needs to detect prompt injection attacks in arbitrary text. Detection 
 
 ## Decision
 
-Use regex-based pattern matching. Each detection pattern is a regular expression with metadata (ID, weight, category, explanation). Text is normalized (NFKC, zero-width char removal, whitespace collapse, lowercase) then tested against all patterns. Currently 19 patterns across 9 categories.
+Use regex-based pattern matching. Each detection pattern is a regular expression with metadata (ID, weight, category, explanation). Text is normalized (NFKC, zero-width char removal, whitespace collapse, lowercase) then tested against all patterns. Currently 39 patterns across 13 detected categories (out of 17 defined). Three categories remain undetected: context_smuggling, translation_attack, instruction_fragmentation.
 
 ## Alternatives Considered
 
@@ -32,5 +32,6 @@ Use regex-based pattern matching. Each detection pattern is a regular expression
 
 - packages/core/patterns.js (pattern definitions)
 - packages/core/detect.js (matching engine)
+- packages/core/index.js (scanPrompt SDK entry point)
 - packages/api/detector.js (API wrapper)
 - packages/extension/detector.js (extension wrapper)
