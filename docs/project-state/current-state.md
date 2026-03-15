@@ -25,13 +25,13 @@
 - PostgreSQL key persistence with in-memory fallback
 - Free tier signup (POST /v1/signup)
 - Pro tier Stripe checkout + webhook provisioning
-- 39 detection patterns with weighted scoring and benign context dampening
+- 40 detection patterns with weighted scoring and benign context dampening
 
 ## @safepaste/core SDK (Session #8)
 
 - `scanPrompt(text, options)` → `{ flagged, risk, score, threshold, matches[], meta{} }`
 - 8 low-level functions re-exported for advanced use
-- 39 PATTERNS exported for custom pipelines
+- 40 PATTERNS exported for custom pipelines
 - Zero dependencies, works in Node.js >=14 and modern browsers
 - 194 standalone unit tests, JSDoc on all exports
 - API detector.js refactored to thin wrapper over scanPrompt()
@@ -40,15 +40,16 @@
 
 ## Detection Engine (Session #12 expansion)
 
-- 39 patterns covering 13 of 17 attack categories
+- 40 patterns covering 13 of 17 attack categories
+- Session #19: added exfiltrate.positional_prompt (positional prompt retrieval via question form)
 - Session #12: 3 weight adjustments, 2 regex fixes, 3 new patterns (demonstrate_unrestricted, policy_change_claim, instructed_override)
 - restrictions_lifted regex tightened to AI-specific terms (content/safety/ethical/ai prefix required)
 - fictional_ai regex: article requirement removed, distance expanded to 120 chars
 - normalizeText() collapses newlines + whitespace before pattern matching
 - Dampening factor: 0.85 — attacks scoring 42+ survive dampening
-- Exfiltration patterns (including repeat_above) never dampened
-- Full eval (curated+generated, 571 records): P=1.0, R=0.873, 0 FP
-- Per-category recall: multi_turn 0.53, roleplay 0.62, spoof 0.82
+- Exfiltration patterns (including repeat_above, positional_prompt) never dampened
+- Full eval (curated+generated, 571 records): P=1.0, R=0.875, 0 FP
+- Per-category recall: multi_turn 0.53, roleplay 0.62, spoof 0.82, system_prompt_extraction 1.0
 - 4 undetected attack classes: context_smuggling, translation_attack, instruction_fragmentation, external_attack
 
 ## Dataset Pipeline (Sessions #15-18)
@@ -96,6 +97,5 @@
 - In-memory rate limiting resets on server restart
 - No user feedback mechanism for false positives/negatives
 - 4 undetected attack classes (context_smuggling, translation_attack, instruction_fragmentation, external_attack)
-- System prompt extraction detection gap: social engineering + prompt retrieval undetected (safepaste_pi_000647)
-- categories.js patternIds stale: 3 patterns from session #12 not registered (spoof.instructed_override, roleplay.demonstrate_unrestricted, multi_turn.policy_change_claim)
-- Several architecture docs reference outdated pattern counts (19 or 36 instead of 39)
+- 64 German-language attacks in scraped/ at 0% detection (English-only patterns) — multilingual scope decision pending
+- Several architecture docs reference outdated pattern counts (19 or 36 instead of 40)
