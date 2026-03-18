@@ -1,0 +1,42 @@
+{
+  "name": "@safepaste/core",
+  "version": "0.3.0",
+  "description": "AI application security engine. Detects attacks that manipulate AI behavior through untrusted input — 13 categories including instruction override, data exfiltration, and tool manipulation. 61 patterns, zero dependencies.",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "detect.js",
+    "patterns.js",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "prompt-injection",
+    "ai-security",
+    "llm",
+    "detection",
+    "safepaste",
+    "jailbreak",
+    "ai-safety",
+    "prompt-security",
+    "prompt-defense",
+    "llm-middleware",
+    "ai-prompt-injection",
+    "llm-security"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rocco-alt/safepaste.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/Rocco-alt/safepaste/issues"
+  },
+  "homepage": "https://github.com/Rocco-alt/safepaste/tree/main/packages/core#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

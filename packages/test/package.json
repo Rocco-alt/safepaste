@@ -1,0 +1,40 @@
+{
+  "name": "@safepaste/test",
+  "version": "0.1.0",
+  "description": "Attack simulation CLI for testing prompt injection detection.",
+  "main": "index.js",
+  "bin": {
+    "safepaste-test": "cli.js"
+  },
+  "files": [
+    "cli.js",
+    "index.js",
+    "payloads.js",
+    "inject.js",
+    "format.js",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@safepaste/core": ">=0.3.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rocco-alt/safepaste.git",
+    "directory": "packages/test"
+  },
+  "bugs": {
+    "url": "https://github.com/Rocco-alt/safepaste/issues"
+  },
+  "homepage": "https://github.com/Rocco-alt/safepaste/tree/main/packages/test#readme",
+  "keywords": [
+    "prompt-injection",
+    "security",
+    "ai-safety",
+    "testing",
+    "cli"
+  ]
+}

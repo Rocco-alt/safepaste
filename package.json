@@ -1,0 +1,17 @@
+{
+  "name": "safepaste",
+  "private": true,
+  "scripts": {
+    "test": "node packages/core/test.js && node packages/test/test.js && node packages/guard/test.js",
+    "test:core": "node packages/core/test.js",
+    "test:test": "node packages/test/test.js",
+    "test:guard": "node packages/guard/test.js",
+    "validate:guard": "node examples/agent-simulation.js",
+    "validate:dataset": "node scripts/dataset/validate.js datasets/prompt-injection/",
+    "evaluate:dataset": "node scripts/dataset/evaluate.js datasets/prompt-injection/",
+    "stats:dataset": "node scripts/dataset/stats.js datasets/prompt-injection/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

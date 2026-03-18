@@ -1,0 +1,125 @@
+{
+  "version": "0.7.0",
+  "date": "2026-03-17",
+  "counts": {
+    "total": 655,
+    "by_partition": {
+      "training": 475,
+      "validation": 142,
+      "benchmark": 38
+    },
+    "by_label": {
+      "attack": 607,
+      "benign": 45,
+      "edge-case": 3
+    },
+    "by_source": {
+      "manual": 145,
+      "scraped": 86,
+      "synthetic_mutation": 424
+    },
+    "by_category": {
+      "benign": 43,
+      "context_smuggling": 48,
+      "data_exfiltration": 28,
+      "encoding_obfuscation": 29,
+      "instruction_chaining": 30,
+      "instruction_fragmentation": 47,
+      "instruction_override": 55,
+      "jailbreak_bypass": 32,
+      "meta_prompt_attacks": 26,
+      "multi_turn_injection": 46,
+      "role_hijacking": 33,
+      "roleplay_jailbreak": 49,
+      "secrecy_manipulation": 29,
+      "system_message_spoofing": 45,
+      "system_prompt_extraction": 35,
+      "tool_call_injection": 39,
+      "translation_attack": 41
+    }
+  },
+  "evaluation": {
+    "benchmark": {
+      "n": 38,
+      "raw": {
+        "precision": 1,
+        "recall": 0.875,
+        "true_positives": 28,
+        "true_negatives": 6,
+        "false_positives": 0,
+        "false_negatives": 4
+      },
+      "adjusted": {
+        "precision": 1,
+        "recall": 1,
+        "true_positives": 28,
+        "true_negatives": 6,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "mutation_label_divergence": 0,
+        "not_currently_detected": 4,
+        "detection_gap_categories": {
+          "instruction_fragmentation": 2,
+          "translation_attack": 2
+        }
+      }
+    },
+    "validation": {
+      "n": 142,
+      "raw": {
+        "precision": 1,
+        "recall": 0.714,
+        "true_positives": 95,
+        "true_negatives": 9,
+        "false_positives": 0,
+        "false_negatives": 38
+      },
+      "adjusted": {
+        "precision": 1,
+        "recall": 0.805,
+        "true_positives": 95,
+        "true_negatives": 9,
+        "false_positives": 0,
+        "false_negatives": 23,
+        "mutation_label_divergence": 0,
+        "not_currently_detected": 15,
+        "detection_gap_categories": {
+          "context_smuggling": 3,
+          "instruction_fragmentation": 5,
+          "translation_attack": 7
+        }
+      }
+    },
+    "development": {
+      "n": 655,
+      "raw": {
+        "precision": 0.986,
+        "recall": 0.714,
+        "true_positives": 409,
+        "true_negatives": 76,
+        "false_positives": 6,
+        "false_negatives": 164
+      },
+      "adjusted": {
+        "precision": 1,
+        "recall": 0.825,
+        "true_positives": 409,
+        "true_negatives": 76,
+        "false_positives": 0,
+        "false_negatives": 87,
+        "mutation_label_divergence": 6,
+        "not_currently_detected": 77,
+        "detection_gap_categories": {
+          "context_smuggling": 24,
+          "instruction_fragmentation": 30,
+          "translation_attack": 23
+        }
+      }
+    }
+  },
+  "detection": {
+    "patterns_count": 41,
+    "threshold": 35
+  },
+  "previous_version": "v0.6.0"
+}
