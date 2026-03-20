@@ -1,0 +1,59 @@
+name: Publish Python SDK to PyPI
+
+on:
+  push:
+    tags: ['python-v*']
+
+jobs:
+  verify:
+    name: Verify before publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/api/package-lock.json
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Python SDK unit tests
+        run: python -m pytest packages/python/tests/ -v
+
+      - name: Cross-language parity check
+        run: node scripts/parity-check.js --both
+
+  publish:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: verify
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build package
+        run: python -m build packages/python/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packages/python/dist/
