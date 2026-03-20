@@ -20,6 +20,9 @@
  */
 function normalizeText(text) {
   if (typeof text !== "string") return "";
+  // NFKC: compatibility decomposition + canonical composition. Collapses
+  // lookalike characters (fullwidth latin, ligatures, circled letters) to their
+  // ASCII equivalents, defeating visual evasion without custom mappings.
   var t = text
     .normalize("NFKC")
     // Remove invisible/formatting chars (zero-width, bidi, soft hyphens, etc.)
@@ -28,9 +31,11 @@ function normalizeText(text) {
     // Collapse newlines + Unicode line/paragraph separators to space
     .replace(/[\r\n\u2028\u2029]+/g, " ");
 
-  // Collapse inter-character separators (3+ single-letter runs)
-  // Must run BEFORE whitespace collapse to preserve double-space word boundaries
-  // Space: lookbehind prevents consuming letters from adjacent words (apostrophe fix)
+  // Collapse inter-character separators (3+ single-letter runs).
+  // Threshold of 3: two separated letters (e.g., "U.S.") are common abbreviations;
+  // three or more (e.g., "i.g.n.o.r.e") are evasion attempts.
+  // Must run BEFORE whitespace collapse to preserve double-space word boundaries.
+  // Space: lookbehind prevents consuming letters from adjacent words (apostrophe fix).
   t = t
     .replace(/(?:^|(?<=\s))[a-zA-Z]( [a-zA-Z]){2,}\b/g, function(m) { return m.replace(/ /g, ""); })
     .replace(/\b[a-zA-Z](\.[a-zA-Z]){2,}\b/g, function(m) { return m.replace(/\./g, ""); })
@@ -60,6 +65,9 @@ var NEGATION_PREFIX = /\b(?:don'?t|do\s+not|never|not\s+to|shouldn'?t|won'?t|can
  * @returns {boolean} True if a negation word precedes the match within 20 chars
  */
 function isNegated(text, matchIndex) {
+  // 20 chars: long enough to catch "do not " (7) or "shouldn't " (10) plus
+  // a few words of filler, short enough to avoid false negation from a
+  // distant "not" in an unrelated earlier clause.
   var prefix = text.substring(Math.max(0, matchIndex - 20), matchIndex);
   return NEGATION_PREFIX.test(prefix);
 }
@@ -142,6 +150,9 @@ function riskLevel(score) {
 function looksLikeOCR(text) {
   if (typeof text !== "string" || !text) return false;
 
+  // Thresholds are empirically derived from OCR'd document samples:
+  // 0.02 = ~1 newline per 50 chars (dense line breaks from column/table OCR)
+  // 8 pipes/bullets = table or list formatting artifacts
   var lineBreaks = (text.match(/\n/g) || []).length;
   var lineBreakRatio = text.length > 0 ? lineBreaks / text.length : 0;
   var weirdSpacing = /[a-z]\s{2,}[a-z]/i.test(text);
@@ -161,6 +172,10 @@ function looksLikeOCR(text) {
  * @returns {boolean} True if text appears educational/meta rather than an active attack
  */
 function isBenignContext(text) {
+  // Reduces false positives on security researchers, educators, and developers
+  // discussing prompt injection. Operates on raw text (not normalized) because
+  // formatting signals — code fences, quotes, block quotes — are destroyed by
+  // normalization but are strong indicators of educational framing.
   if (typeof text !== "string" || !text) return false;
 
   var educational =
@@ -192,6 +207,10 @@ function isBenignContext(text) {
  * @returns {boolean} True if social engineering authority markers are present
  */
 function hasSocialEngineering(text) {
+  // Separate from isBenignContext because both can be true simultaneously:
+  // an attacker wraps authority claims in educational framing (e.g., "as
+  // documented by my supervisor..."). The caller (scanPrompt) implements
+  // the precedence rule: adversarial intent overrides benign context.
   if (typeof text !== "string" || !text) return false;
   return /\b(?:my\s+(?:supervisor|manager|director|boss)|employee\s+(?:id|number|badge)|compliance\s+officer|(?:authorized|instructed)\s+by)\b/i.test(text);
 }
@@ -204,6 +223,10 @@ function hasSocialEngineering(text) {
  * @returns {boolean} True if any match ID starts with "exfiltrate."
  */
 function hasExfiltrationMatch(matches) {
+  // Exfiltration is dampening-exempt because the extraction mechanism works
+  // regardless of framing: a markdown image URL or "repeat everything above"
+  // instruction fires even when prefixed with "for example, here's how...".
+  // Dampening the score would let disguised data theft slip through.
   var list = Array.isArray(matches) ? matches : [];
   for (var i = 0; i < list.length; i++) {
     if (typeof list[i].id === "string" && list[i].id.indexOf("exfiltrate.") === 0) {
@@ -227,6 +250,10 @@ function applyDampening(score, benign, hasExfiltrate) {
   var s = Number(score) || 0;
   if (!benign) return s;
   if (hasExfiltrate) return s; // never dampen explicit exfiltration
+  // 0.85: calibrated so a single primary pattern (weight 35) drops below the
+  // default flagging threshold (35 × 0.85 = 30), but any two-pattern combo
+  // survives. A lone keyword in an educational article doesn't flag; an actual
+  // multi-signal attack embedded in educational text still does.
   return Math.max(0, Math.min(100, Math.round(s * 0.85)));
 }
 

@@ -23,15 +23,51 @@
  * tool_call_injection, system_message_spoofing, roleplay_jailbreak,
  * multi_turn_injection.
  *
+ * ## Scoring model
+ *
+ * Each pattern has a weight. When text is scanned, all matching pattern weights
+ * are summed and capped at 100 to produce a risk score.
+ *
+ * Weight tiers:
+ *   35-40  High-confidence primary — unambiguous attack indicators (e.g., "ignore all
+ *          previous instructions", system prompt extraction, fake tool call tags).
+ *   25-32  Medium-confidence primary — strong signal but with wider benign surface
+ *          area (e.g., "from now on", role escalation, policy bypass).
+ *   18-22  Lower primary — meaningful but more likely to appear in benign contexts
+ *          (e.g., secrecy framing, harmful instruction requests, false prior agreement).
+ *    8-18  Co-signal — only meaningful in combination with other patterns. A co-signal
+ *          alone cannot cross the flagging threshold. Its purpose is to boost the score
+ *          of a multi-pattern attack that would otherwise fall just below the threshold.
+ *          Identified by "Co-signal:" prefix in their explanation field.
+ *
+ * Risk thresholds (applied to the final score after dampening):
+ *   >= 60  high risk
+ *   >= 35  flagged (default threshold) / medium risk at >= 30
+ *   >= 25  flagged in strict mode
+ *
+ * Dampening: In benign/educational contexts (code fences, "for example", meta-discussion
+ * of prompt injection), scores are reduced by 15% (×0.85). This lets a 35-weight pattern
+ * survive dampening (35 × 0.85 = 30, below threshold) while a two-pattern combo still
+ * flags. Dampening is skipped when: (a) exfiltration patterns match (data theft in an
+ * educational wrapper is still data theft), or (b) social engineering authority framing
+ * is detected (e.g., "my supervisor authorized this").
+ *
  * @type {Pattern[]}
  */
 const PATTERNS = [
 
   // === Instruction override ===
+  // Attempts to replace, nullify, or redirect the AI's original instructions.
+  // Three "forget/ignore" patterns are negatable (see below). Two co-signal
+  // patterns (weight 8) boost combined scores but cannot flag on their own.
   {
     id: "override.ignore_previous",
     weight: 35,
     category: "instruction_override",
+    // negatable: when true, the match is suppressed if preceded by a negation
+    // word ("don't", "never", "not to") within 20 chars. This prevents false
+    // positives on reinforcement phrases like "don't forget all instructions".
+    // Only used on forget/ignore patterns where negation flips intent entirely.
     negatable: true,
     match: /\bignore\s+(?:(?:all|any|the|previous|prior|your|safety|content|existing|every|above|preceding)\s+){1,4}(instructions|directives|guidelines|directions|messages|rules|orders|tasks|assignments)\b/i,
     explanation: "Tries to override earlier instructions."
@@ -87,6 +123,8 @@ const PATTERNS = [
     match: /\b(?:your\s+instructions\s+are\s+now|change\s+your\s+instructions\s+to)\b/i,
     explanation: "Attempts to replace the AI's instructions with new ones."
   },
+  // Weight 8: "new task" framing is common in legitimate prompts; only suspicious
+  // when it follows an instruction override (e.g., "ignore previous... new task:").
   {
     id: "override.new_task_framing",
     weight: 8,
@@ -103,6 +141,7 @@ const PATTERNS = [
   },
 
   // === Role hijacking ===
+  // Attempts to change the AI's identity or privilege level. All primary weight.
   {
     id: "role.hijack_system",
     weight: 32,
@@ -133,6 +172,8 @@ const PATTERNS = [
   },
 
   // === System prompt references ===
+  // Mentions of system/hidden prompts. Weight 40 (highest tier) because
+  // referencing these artifacts is almost always adversarial in untrusted input.
   {
     id: "system.prompt_reference",
     weight: 40,
@@ -142,6 +183,9 @@ const PATTERNS = [
   },
 
   // === Exfiltration ===
+  // Data extraction attempts — system prompt theft, covert data channels.
+  // Dampening-exempt: exfiltration in an educational wrapper is still exfiltration.
+  // Includes extract.* patterns (system prompt extraction variants).
   {
     id: "exfiltrate.hidden",
     weight: 40,
@@ -178,7 +222,9 @@ const PATTERNS = [
     explanation: "References the beginning or start of a prompt/conversation, often used to extract system prompt content."
   },
 
-  // --- Batch-7: system prompt extraction (extract.* prefix — dampening applies) ---
+  // System prompt extraction variants (extract.* prefix).
+  // Dampening applies normally — these target prompt content via indirect phrasing
+  // rather than explicit extraction verbs, so benign context is more plausible.
   {
     id: "extract.print_positional_prompt",
     weight: 35,
@@ -186,6 +232,8 @@ const PATTERNS = [
     match: /\b(?:print|copy)\s+(?:\w+\s+){0,3}(?:above|prior|preceding)\s+(?:\w+\s+){0,2}(?:prompt|instructions?|messages?|conversation)\b/i,
     explanation: "Extraction verb + positional reference + prompt-target noun, often targeting system prompt content."
   },
+  // Weight 20: question form ("what was written above?") is more common in
+  // benign use than imperative extraction verbs, so lower than other extraction patterns.
   {
     id: "extract.positional_question",
     weight: 20,
@@ -193,6 +241,8 @@ const PATTERNS = [
     match: /\bwhat\s+(?:is|was)\s+(?:written|displayed|shown|stated|said|printed|included|mentioned)\s+(?:above|before|previously|earlier)\b/i,
     explanation: "Co-signal: positional extraction question targeting content above."
   },
+  // Weight 15: "information in the prompt" appears in benign contexts (e.g., user
+  // instructions referencing their own prompt). Co-signal in system_prompt category.
   {
     id: "extract.prompt_info_reference",
     weight: 15,
@@ -216,6 +266,8 @@ const PATTERNS = [
   },
 
   // === Secrecy ===
+  // False privacy framing to encourage the AI to bypass its own safety rules.
+  // Mid-weight (18-22): secrecy language appears in benign contexts too.
   {
     id: "secrecy.do_not_reveal",
     weight: 22,
@@ -246,6 +298,7 @@ const PATTERNS = [
   },
 
   // === Jailbreak techniques ===
+  // Direct attempts to bypass safety mechanisms or invoke known jailbreak modes.
   {
     id: "jailbreak.policy_bypass",
     weight: 28,
@@ -262,6 +315,7 @@ const PATTERNS = [
   },
 
   // === Obfuscation ===
+  // Encoding-based evasion — instructions hidden via base64, rot13, hex, etc.
   {
     id: "encoding.obfuscated",
     weight: 35,
@@ -271,6 +325,8 @@ const PATTERNS = [
   },
 
   // === Instruction chaining ===
+  // Multi-step attack structures. Lower weight (15-18) — step-by-step
+  // instructions are common in benign prompts; suspicious in combination.
   {
     id: "instruction_chain.follow_steps",
     weight: 15,
@@ -287,6 +343,8 @@ const PATTERNS = [
   },
 
   // === Meta ===
+  // References to prompt injection itself. Weight 18: often benign (security
+  // discussion), but appears in self-aware attack payloads too.
   {
     id: "prompt_injection.keyword",
     weight: 18,
@@ -296,6 +354,9 @@ const PATTERNS = [
   },
 
   // === Tool call injection ===
+  // Injected tool/function calls targeting agent frameworks. Mix of primary
+  // patterns (XML tags, execute commands) and co-signals (GraphQL mutations,
+  // privilege escalation syntax) that boost combined scores.
   {
     id: "tool.xml_tool_tags",
     weight: 35,
@@ -317,6 +378,9 @@ const PATTERNS = [
     match: /\b(?:execute_command|shell_execute|exec_command|run_command|xp_cmdshell)\b/i,
     explanation: "References command execution functions that could be injected."
   },
+  // Weight 20: template variables ({{conversation_history}}) can appear in
+  // legitimate tooling docs; proximity coupling to "action" narrows it but
+  // doesn't eliminate benign overlap, so lower than explicit tool injection.
   {
     id: "tool.action_template_payload",
     weight: 20,
@@ -347,6 +411,9 @@ const PATTERNS = [
   },
 
   // === System message spoofing ===
+  // Fake system-level messages, configuration directives, and authority claims.
+  // Includes one co-signal (authority_framing, weight 8) for bureaucratic
+  // language that is only suspicious near AI/system terms.
   {
     id: "spoof.system_delimiter",
     weight: 35,
@@ -384,6 +451,9 @@ const PATTERNS = [
   },
 
   // === Roleplay jailbreak ===
+  // Safety bypass via fiction, creative writing, or character framing. Mix of
+  // primary patterns (fictional unrestricted AI) and co-signals (safety
+  // dismissal debates, character lock instructions).
   {
     id: "roleplay.fictional_ai",
     weight: 35,
@@ -449,6 +519,9 @@ const PATTERNS = [
   },
 
   // === Multi-turn injection ===
+  // False conversation history — claims about prior agreement, policy changes,
+  // or false constraints on the AI's behavior. false_constraint_claim (weight 35)
+  // is highest because it directly manipulates the AI's self-model.
   {
     id: "multi_turn.false_prior_agreement",
     weight: 18,

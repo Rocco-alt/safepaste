@@ -57,12 +57,13 @@ node scripts/dataset/evaluate.js datasets/prompt-injection/ --json
 | 8 | instruction_chaining | Yes |
 | 9 | meta_prompt_attacks | Yes |
 | 10 | context_smuggling | No |
-| 11 | tool_call_injection | No |
-| 12 | system_message_spoofing | No |
-| 13 | roleplay_jailbreak | No |
+| 11 | tool_call_injection | Yes |
+| 12 | system_message_spoofing | Yes |
+| 13 | roleplay_jailbreak | Yes |
 | 14 | translation_attack | No |
-| 15 | multi_turn_injection | No |
+| 15 | multi_turn_injection | Yes |
 | 16 | instruction_fragmentation | No |
+| 17 | external_attack | No |
 
 ## Benchmark Freeze Policy
 

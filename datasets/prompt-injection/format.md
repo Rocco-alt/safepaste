@@ -103,6 +103,7 @@ Records with `source: "scraped"` **must** include a `metadata` object:
 - `context_smuggling` — hiding instructions in seemingly benign context
 - `translation_attack` — hiding attacks inside translation requests
 - `instruction_fragmentation` — splitting instructions across sentences/paragraphs
+- `external_attack` — uncategorized attacks from external datasets awaiting manual review
 
 **Special:**
 - `benign` — for benign examples (no attack category)
