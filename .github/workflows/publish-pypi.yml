@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Install Python SDK and pytest
-        run: pip install -e packages/python/ pytest
+        run: pip install packages/python/ pytest
 
       - name: Python SDK unit tests
         run: python -m pytest packages/python/tests/ -v
