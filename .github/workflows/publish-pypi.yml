@@ -22,8 +22,8 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
-      - name: Install pytest
-        run: pip install pytest
+      - name: Install Python SDK and pytest
+        run: pip install -e packages/python/ pytest
 
       - name: Python SDK unit tests
         run: python -m pytest packages/python/tests/ -v
