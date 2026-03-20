@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+safepaste/__init__.py
+safepaste/detect.py
+safepaste/patterns.py
+safepaste/py.typed
+safepaste.egg-info/PKG-INFO
+safepaste.egg-info/SOURCES.txt
+safepaste.egg-info/dependency_links.txt
+safepaste.egg-info/top_level.txt
+tests/test_safepaste.py
