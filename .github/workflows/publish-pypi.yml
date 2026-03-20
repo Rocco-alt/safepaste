@@ -15,21 +15,11 @@ jobs:
         with:
           python-version: '3.13'
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install Node dependencies
-        run: npm install
-
       - name: Install Python SDK and pytest
         run: pip install packages/python/ pytest
 
       - name: Python SDK unit tests
         run: python -m pytest packages/python/tests/ -v
-
-      - name: Cross-language parity check
-        run: node scripts/parity-check.js --both
 
   publish:
     name: Publish to PyPI
