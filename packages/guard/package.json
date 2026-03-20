@@ -32,5 +32,6 @@
     "llm-guard",
     "middleware",
     "tool-use-security"
-  ]
+  ],
+  "author": "SafePaste Contributors"
 }

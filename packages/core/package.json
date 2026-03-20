@@ -38,5 +38,6 @@
   "homepage": "https://github.com/Rocco-alt/safepaste/tree/main/packages/core#readme",
   "engines": {
     "node": ">=14.0.0"
-  }
+  },
+  "author": "SafePaste Contributors"
 }
