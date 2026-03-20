@@ -9,7 +9,7 @@
 /**
  * @typedef {Object} Pattern
  * @property {string} id - Unique identifier (e.g., "override.ignore_previous")
- * @property {number} weight - Score contribution when matched (15-40)
+ * @property {number} weight - Score contribution when matched (8-40)
  * @property {string} category - Attack category (e.g., "instruction_override")
  * @property {RegExp} match - Regex pattern to test against normalized text
  * @property {string} explanation - Human-readable description of what this catches

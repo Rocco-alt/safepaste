@@ -29,10 +29,10 @@ console.log(result.matches);  // [{ id: "override.ignore_previous", ... }, ...]
 
 | Category | Patterns | Weight Range |
 |----------|----------|-------------|
-| Instruction Override | 9 | 8-35 |
+| Instruction Override | 10 | 8-35 |
 | Role Hijacking | 4 | 22-32 |
-| System Prompt Extraction | 6 | 20-40 |
-| Data Exfiltration | 4 | 35-40 |
+| System Prompt | 2 | 15-40 |
+| Exfiltration | 9 | 20-40 |
 | Secrecy Manipulation | 4 | 18-22 |
 | Jailbreak Bypass | 2 | 28-35 |
 | Encoding Obfuscation | 1 | 35 |
@@ -40,8 +40,8 @@ console.log(result.matches);  // [{ id: "override.ignore_previous", ... }, ...]
 | Meta Prompt Attacks | 1 | 18 |
 | Tool Call Injection | 7 | 12-35 |
 | System Message Spoofing | 5 | 8-35 |
-| Roleplay Jailbreak | 9 | 12-35 |
-| Multi-Turn Injection | 5 | 18-30 |
+| Roleplay Jailbreak | 9 | 8-35 |
+| Multi-Turn Injection | 5 | 18-35 |
 
 ## Use Cases
 

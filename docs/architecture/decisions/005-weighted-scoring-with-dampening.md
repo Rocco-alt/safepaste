@@ -9,7 +9,7 @@ Not all prompt injection patterns are equally suspicious. "Follow these steps" i
 
 ## Decision
 
-Each pattern has a weight (15-40). Matched weights are summed and capped at 100. Benign context detection checks for educational/demo/research framing, and if found, applies a 15% score reduction (0.85x multiplier). Exfiltration patterns are never dampened regardless of context. Users choose a threshold: normal (35), strict (25), red-only (60), or off (101).
+Each pattern has a weight (8-40). Matched weights are summed and capped at 100. Benign context detection checks for educational/demo/research framing, and if found, applies a 15% score reduction (0.85x multiplier). Exfiltration patterns are never dampened regardless of context. Users choose a threshold: normal (35), strict (25), red-only (60), or off (101).
 
 ## Alternatives Considered
 

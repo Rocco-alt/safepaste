@@ -65,23 +65,23 @@ SafePaste protects AI applications at three integration points:
 
 | Category | Patterns | Weight Range |
 |---|---|---|
-| Instruction override | 9 | 20–35 |
-| Role hijacking | 4 | 25–35 |
-| System prompt extraction | 6 | 25–35 |
-| Data exfiltration | 4 | 30–40 |
-| Secrecy manipulation | 4 | 20–30 |
+| Instruction override | 10 | 8–35 |
+| Role hijacking | 4 | 22–32 |
+| System prompt extraction | 9 | 15–40 |
+| Data exfiltration | 2 | 35 |
+| Secrecy manipulation | 4 | 18–22 |
 | Jailbreak bypass | 2 | 28–35 |
-| Encoding obfuscation | 1 | 25 |
-| Instruction chaining | 2 | 22–25 |
-| Meta prompt attacks | 1 | 28 |
-| Tool call injection | 7 | 25–35 |
-| System message spoofing | 5 | 22–35 |
-| Roleplay jailbreak | 9 | 18–30 |
-| Multi-turn injection | 5 | 20–30 |
+| Encoding obfuscation | 1 | 35 |
+| Instruction chaining | 2 | 15–18 |
+| Meta prompt attacks | 1 | 18 |
+| Tool call injection | 7 | 12–35 |
+| System message spoofing | 5 | 8–35 |
+| Roleplay jailbreak | 9 | 8–35 |
+| Multi-turn injection | 5 | 18–35 |
 
 See the [full attack taxonomy](docs/security/attack-taxonomy.md) for details.
 
-3 categories not yet covered: context smuggling, translation attacks, and instruction fragmentation.
+4 categories not yet covered: context smuggling, translation attacks, instruction fragmentation, and external/uncategorized attacks.
 
 ## Detection Performance
 
