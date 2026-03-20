@@ -1,5 +1,14 @@
 # Changelog
 
+## safepaste (Python) 0.3.0
+
+- Published `safepaste` to PyPI — Python detection engine.
+- Same 61 patterns, identical scoring, cross-language parity verified against all 655 dataset records.
+- `scan_prompt()` with `ScanResult` dataclass return type.
+- Strict mode support (`strict_mode=True`).
+- Zero runtime dependencies, Python 3.9+.
+- 404 unit tests.
+
 ## @safepaste/guard 0.1.0
 
 - Published `@safepaste/guard` to npm — agent runtime security middleware.

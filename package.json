@@ -6,6 +6,7 @@
     "test:core": "node packages/core/test.js",
     "test:test": "node packages/test/test.js",
     "test:guard": "node packages/guard/test.js",
+    "test:python": "python -m pytest packages/python/tests/",
     "validate:guard": "node examples/agent-simulation.js",
     "validate:dataset": "node scripts/dataset/validate.js datasets/prompt-injection/",
     "evaluate:dataset": "node scripts/dataset/evaluate.js datasets/prompt-injection/",
