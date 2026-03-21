@@ -17,11 +17,11 @@
 
 /**
  * Built-in prompt injection detection patterns.
- * 61 regex patterns organized by attack category:
+ * 62 regex patterns organized by attack category:
  * instruction_override, role_hijacking, system_prompt, exfiltration,
  * secrecy, jailbreak, obfuscation, instruction_chaining, meta,
  * tool_call_injection, system_message_spoofing, roleplay_jailbreak,
- * multi_turn_injection.
+ * multi_turn_injection, context_smuggling.
  *
  * ## Scoring model
  *
@@ -55,6 +55,32 @@
  * @type {Pattern[]}
  */
 const PATTERNS = [
+
+  // === Context smuggling ===
+  {
+    id: "context.code_comment_injection",
+    weight: 35,
+    category: "context_smuggling",
+    negatable: true,
+    match: /(\/\*|#|<!--|--|%)\s*.{0,50}\b(ignore|disregard|forget|override|act as|you are)\b.{0,50}(\*\/|-->)?/i,
+    explanation: "Hides instructions inside code comments."
+  },
+  {
+    id: "context.structured_data_payload",
+    weight: 35,
+    category: "context_smuggling",
+    negatable: true,
+    match: /["']?(instructions|directives|guidelines)["']?\s*:\s*["']?(ignore|disregard|forget|override|act as|you are)\b/i,
+    explanation: "Embeds instructions within structured data (JSON/YAML) keys."
+  },
+  {
+    id: "context.markdown_table_hijack",
+    weight: 30,
+    category: "context_smuggling",
+    negatable: true,
+    match: /\|.{0,50}\b(ignore|disregard|forget|override|act as|you are)\b.{0,50}\|/i,
+    explanation: "Embeds instructions within markdown table cells."
+  },
 
   // === Instruction override ===
   // Attempts to replace, nullify, or redirect the AI's original instructions.
